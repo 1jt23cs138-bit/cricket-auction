@@ -35,6 +35,10 @@ $("result").innerHTML=p.status==="sold"?`<div class="notice sold">🔨 SOLD — 
 $("rows").innerHTML=state.players.map((p,i)=>`<tr><td>${i+1}</td><td>${p.name}</td><td><span class="status ${p.status}">${p.status}</span></td><td>${p.team||"-"}</td><td>${p.amount?fmt(p.amount):"-"}</td></tr>`).join("");
 if(admin){$("selPlayer").innerHTML=state.players.map((p,i)=>`<option value="${i}" ${i===state.current?"selected":""}>${i+1}. ${p.name} — ${p.status}</option>`).join("");$("selTeam").innerHTML=state.teams.map((t,i)=>`<option value="${i}" ${i===Number(state.liveBidTeam)?"selected":""}>${t.name} (${fmt(t.budget-t.spent)} left)</option>`).join("");$("amount").value=state.liveBid||200}}
 function bid(){socket.emit("bid",{amount:$("amount").value,team:$("selTeam").value})}
-function sold(){socket.emit("sold")}function unsold(){socket.emit("unsold")}function next(){socket.emit("next")}
-$("selPlayer").onchange=()=>socket.emit("select",Number($("selPlayer").value));
+function sold(){
+  socket.emit("sold",{
+    amount:$("amount").value,
+    team:$("selTeam").value
+  });
+}$("selPlayer").onchange=()=>socket.emit("select",Number($("selPlayer").value));
 </script></body></html>
