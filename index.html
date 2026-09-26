@@ -29,8 +29,46 @@ socket.on("login",ok=>{if(!ok){$("loginMsg").textContent="Wrong PIN";return}admi
 socket.on("errorMsg",m=>{$("err").textContent=m;$("err").classList.remove("hidden");setTimeout(()=>$("err").classList.add("hidden"),2500)})
 socket.on("update",s=>{state=s;render()});
 function render(){if(!state)return;const p=state.players[state.current];
-$("teams").innerHTML=state.teams.map(t=>`<div class="card"><b>${t.name}</b><div class="small">REMAINING</div><div class="value">${fmt(t.budget-t.spent)}</div><div class="small">Spent ${fmt(t.spent)} • ${t.players.length} players</div></div>`).join("");
-$("currentPlayer").textContent=p.name;$("currentNo").textContent=`Player ${state.current+1} of ${state.players.length} • ${p.status}`;$("liveBid").textContent=fmt(state.liveBid||200);$("liveTeam").textContent=state.liveBidTeam!==""?"Current bid: "+state.teams[state.liveBidTeam].name:"Base price: 200";
+$("teams").innerHTML=state.teams.map(t=>`
+  <div class="card">
+    <h3>${t.name}</h3>
+
+    <div class="small">REMAINING</div>
+    <div class="value">${fmt(t.budget-t.spent)}</div>
+
+    <div class="small">
+      Spent ${fmt(t.spent)} • ${t.players.length} players
+    </div>
+
+    ${
+      t.players.length
+      ? `
+        <div style="margin-top:12px">
+          <b>Players Bought</b>
+          <div class="scroll">
+            <table style="min-width:100%">
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Bid</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${t.players.map(player=>`
+                  <tr>
+                    <td>${player.name}</td>
+                    <td>${fmt(player.amount)}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `
+      : `<div class="small" style="margin-top:12px">No players bought yet</div>`
+    }
+  </div>
+`).join("");$("currentPlayer").textContent=p.name;$("currentNo").textContent=`Player ${state.current+1} of ${state.players.length} • ${p.status}`;$("liveBid").textContent=fmt(state.liveBid||200);$("liveTeam").textContent=state.liveBidTeam!==""?"Current bid: "+state.teams[state.liveBidTeam].name:"Base price: 200";
 $("result").innerHTML=p.status==="sold"?`<div class="notice sold">🔨 SOLD — ${p.team} for ${fmt(p.amount)} points</div>`:p.status==="unsold"?`<div class="notice unsold">❌ UNSOLD</div>`:`<div class="notice live">🔴 BIDDING LIVE</div>`;
 $("rows").innerHTML=state.players.map((p,i)=>`<tr><td>${i+1}</td><td>${p.name}</td><td><span class="status ${p.status}">${p.status}</span></td><td>${p.team||"-"}</td><td>${p.amount?fmt(p.amount):"-"}</td></tr>`).join("");
 if(admin){$("selPlayer").innerHTML=state.players.map((p,i)=>`<option value="${i}" ${i===state.current?"selected":""}>${i+1}. ${p.name} — ${p.status}</option>`).join("");$("selTeam").innerHTML=state.teams.map((t,i)=>`<option value="${i}" ${i===Number(state.liveBidTeam)?"selected":""}>${t.name} (${fmt(t.budget-t.spent)} left)</option>`).join("");$("amount").value=state.liveBid||200}}
