@@ -83,6 +83,10 @@ button{
   cursor:pointer
 }
 
+button:hover{
+  transform:translateY(-1px)
+}
+
 .primary{
   background:#18204a;
   color:#fff
@@ -183,6 +187,99 @@ th{
   gap:10px;
   align-items:center;
   flex-wrap:wrap
+}
+
+/* -----------------------------------------------
+   ADMIN BUTTONS
+------------------------------------------------ */
+
+.undo{
+  background:#fff3cd;
+  border-color:#e0b94f;
+  color:#6b4d00
+}
+
+.edit{
+  background:#e7f0ff;
+  border-color:#9dbaf0;
+  color:#173d78
+}
+
+.excel{
+  background:#e5f7ea;
+  border-color:#91d39f;
+  color:#155b25
+}
+
+.danger{
+  background:#ffe6e6;
+  border-color:#e6aaaa;
+  color:#8b1a1a
+}
+
+/* -----------------------------------------------
+   ANIMATIONS
+------------------------------------------------ */
+
+@keyframes pulseBid{
+
+  0%{
+    transform:scale(1)
+  }
+
+  50%{
+    transform:scale(1.12)
+  }
+
+  100%{
+    transform:scale(1)
+  }
+
+}
+
+@keyframes soldFlash{
+
+  0%{
+    transform:scale(1);
+    box-shadow:0 0 0 rgba(0,0,0,0)
+  }
+
+  50%{
+    transform:scale(1.05);
+    box-shadow:0 0 35px rgba(30,180,80,.5)
+  }
+
+  100%{
+    transform:scale(1);
+    box-shadow:0 0 0 rgba(0,0,0,0)
+  }
+
+}
+
+@keyframes nextPlayer{
+
+  0%{
+    opacity:.2;
+    transform:translateY(15px)
+  }
+
+  100%{
+    opacity:1;
+    transform:translateY(0)
+  }
+
+}
+
+.bid-animation{
+  animation:pulseBid .45s ease
+}
+
+.sold-animation{
+  animation:soldFlash .8s ease
+}
+
+.next-animation{
+  animation:nextPlayer .5s ease
 }
 
 </style>
@@ -291,7 +388,7 @@ Enter
 <div class="card">
 
 <h2>
-Admin Control
+🛠️ Admin Control
 </h2>
 
 <div class="grid">
@@ -366,6 +463,82 @@ NEXT ▶
 
 </div>
 
+<hr>
+
+
+<h3>
+🔧 Corrections
+</h3>
+
+<div class="grid">
+
+<label>
+
+Sold Player
+
+<select id="editPlayer"></select>
+
+</label>
+
+
+<label>
+
+New Team
+
+<select id="editTeam"></select>
+
+</label>
+
+
+<label>
+
+New Bid Amount
+
+<input
+  id="editAmount"
+  type="number"
+  min="200"
+  value="200"
+>
+
+</label>
+
+</div>
+
+
+<div class="row">
+
+<button
+  class="undo"
+  onclick="undoSale()"
+>
+↩️ UNDO LAST SALE
+</button>
+
+<button
+  class="edit"
+  onclick="editSale()"
+>
+✏️ SAVE EDIT
+</button>
+
+</div>
+
+
+<hr>
+
+
+<h3>
+📊 Export
+</h3>
+
+<button
+  class="excel"
+  onclick="downloadExcel()"
+>
+📥 DOWNLOAD FINAL SQUADS AS EXCEL
+</button>
+
 </div>
 
 </section>
@@ -384,7 +557,10 @@ NEXT ▶
 ></div>
 
 
-<div class="card center">
+<div
+  id="auctionCard"
+  class="card center"
+>
 
 <div class="small">
 CURRENT PLAYER
@@ -450,7 +626,6 @@ CURRENT PLAYER
 
 <script src="/socket.io/socket.io.js"></script>
 
-
 <script>
 
 const socket = io();
@@ -459,16 +634,10 @@ let state = null;
 
 let admin = false;
 
-
-// --------------------------------------------------
-// ADMIN TOKEN
-// --------------------------------------------------
-
-// This is stored ONLY in this browser.
-// Refreshing the page keeps the Admin session.
-
 let adminToken =
-  localStorage.getItem("cricketAuctionAdminToken") || "";
+  localStorage.getItem(
+    "cricketAuctionAdminToken"
+  ) || "";
 
 
 const $ = x =>
@@ -479,9 +648,9 @@ const fmt = n =>
   Number(n || 0).toLocaleString("en-IN");
 
 
-// --------------------------------------------------
+// ==================================================
 // ENTRY
-// --------------------------------------------------
+// ==================================================
 
 function showAdmin(){
 
@@ -491,10 +660,6 @@ function showAdmin(){
 
   $("mode").textContent =
     "🔐 Admin Login";
-
-  // If this browser already has the
-  // authorized Admin token, automatically
-  // restore the Admin session.
 
   if(adminToken){
 
@@ -506,6 +671,7 @@ function showAdmin(){
     });
 
   }
+
 }
 
 
@@ -521,9 +687,9 @@ function showViewer(){
 }
 
 
-// --------------------------------------------------
+// ==================================================
 // LOGIN
-// --------------------------------------------------
+// ==================================================
 
 function login(){
 
@@ -549,13 +715,12 @@ function login(){
 }
 
 
-// --------------------------------------------------
-// LOGIN RESPONSE
-// --------------------------------------------------
-
 socket.on("login", response => {
 
-  if(!response || response.ok !== true){
+  if(
+    !response ||
+    response.ok !== true
+  ){
 
     admin = false;
 
@@ -566,12 +731,10 @@ socket.on("login", response => {
     return;
   }
 
-
-  // Save the secure token in this browser
-
   if(response.token){
 
-    adminToken = response.token;
+    adminToken =
+      response.token;
 
     localStorage.setItem(
       "cricketAuctionAdminToken",
@@ -580,11 +743,7 @@ socket.on("login", response => {
 
   }
 
-
-  // Admin is authorized
-
   admin = true;
-
 
   $("login").classList.add("hidden");
 
@@ -595,16 +754,14 @@ socket.on("login", response => {
   $("mode").textContent =
     "🔐 ADMIN";
 
-  $("loginMsg").textContent = "";
-
   render();
 
 });
 
 
-// --------------------------------------------------
-// AUCTION STATE
-// --------------------------------------------------
+// ==================================================
+// STATE
+// ==================================================
 
 socket.on("update", s => {
 
@@ -615,13 +772,14 @@ socket.on("update", s => {
 });
 
 
-// --------------------------------------------------
-// SERVER ERROR
-// --------------------------------------------------
+// ==================================================
+// MESSAGES
+// ==================================================
 
-socket.on("errorMsg", m => {
+function showError(message){
 
-  $("err").textContent = m;
+  $("err").textContent =
+    message;
 
   $("err").classList.remove("hidden");
 
@@ -629,35 +787,100 @@ socket.on("errorMsg", m => {
 
     $("err").classList.add("hidden");
 
-  },2500);
+  },3000);
+
+}
+
+
+socket.on("errorMsg", showError);
+
+
+socket.on("successMsg", message => {
+
+  alert(message);
 
 });
 
 
-// --------------------------------------------------
-// ADMIN LOST
-// --------------------------------------------------
+// ==================================================
+// BID ANIMATION
+// ==================================================
 
-socket.on("adminRevoked", data => {
+socket.on("bidAnimation", () => {
 
-  admin = false;
+  $("liveBid").classList.remove(
+    "bid-animation"
+  );
 
-  $("admin").classList.add("hidden");
+  void $("liveBid").offsetWidth;
 
-  $("mode").textContent =
-    "👀 Viewer";
-
-  alert(
-    data?.message ||
-    "Admin access was removed."
+  $("liveBid").classList.add(
+    "bid-animation"
   );
 
 });
 
 
-// --------------------------------------------------
+// ==================================================
+// SOLD ANIMATION
+// ==================================================
+
+socket.on("soldAnimation", data => {
+
+  $("auctionCard").classList.remove(
+    "sold-animation"
+  );
+
+  void $("auctionCard").offsetWidth;
+
+  $("auctionCard").classList.add(
+    "sold-animation"
+  );
+
+});
+
+
+// ==================================================
+// NEXT ANIMATION
+// ==================================================
+
+socket.on("nextAnimation", () => {
+
+  $("auctionCard").classList.remove(
+    "next-animation"
+  );
+
+  void $("auctionCard").offsetWidth;
+
+  $("auctionCard").classList.add(
+    "next-animation"
+  );
+
+});
+
+
+// ==================================================
+// UNSOLD ANIMATION
+// ==================================================
+
+socket.on("unsoldAnimation", () => {
+
+  $("auctionCard").classList.remove(
+    "sold-animation"
+  );
+
+  void $("auctionCard").offsetWidth;
+
+  $("auctionCard").classList.add(
+    "sold-animation"
+  );
+
+});
+
+
+// ==================================================
 // RENDER
-// --------------------------------------------------
+// ==================================================
 
 function render(){
 
@@ -669,9 +892,9 @@ function render(){
   if(!p) return;
 
 
-  // -----------------------------------------------
+  // ==================================================
   // TEAMS
-  // -----------------------------------------------
+  // ==================================================
 
   $("teams").innerHTML =
     state.teams.map(t => `
@@ -767,19 +990,17 @@ function render(){
     `).join("");
 
 
-  // -----------------------------------------------
+  // ==================================================
   // CURRENT PLAYER
-  // -----------------------------------------------
+  // ==================================================
 
   $("currentPlayer").textContent =
     p.name;
-
 
   $("currentNo").textContent =
     `Player ${state.current + 1}
      of ${state.players.length}
      • ${p.status}`;
-
 
   $("liveBid").textContent =
     fmt(state.liveBid || 200);
@@ -804,9 +1025,9 @@ function render(){
   }
 
 
-  // -----------------------------------------------
+  // ==================================================
   // RESULT
-  // -----------------------------------------------
+  // ==================================================
 
   if(p.status === "sold"){
 
@@ -855,22 +1076,18 @@ function render(){
   }
 
 
-  // -----------------------------------------------
+  // ==================================================
   // PLAYER RESULTS
-  // -----------------------------------------------
+  // ==================================================
 
   $("rows").innerHTML =
     state.players.map((p,i) => `
 
       <tr>
 
-        <td>
-          ${i + 1}
-        </td>
+        <td>${i + 1}</td>
 
-        <td>
-          ${p.name}
-        </td>
+        <td>${p.name}</td>
 
         <td>
 
@@ -887,7 +1104,8 @@ function render(){
         </td>
 
         <td>
-          ${p.amount
+          ${
+            p.amount
             ? fmt(p.amount)
             : "-"
           }
@@ -898,9 +1116,9 @@ function render(){
     `).join("");
 
 
-  // -----------------------------------------------
-  // ADMIN CONTROLS
-  // -----------------------------------------------
+  // ==================================================
+  // ADMIN
+  // ==================================================
 
   if(admin){
 
@@ -947,14 +1165,73 @@ function render(){
     $("amount").value =
       state.liveBid || 200;
 
+
+    // -----------------------------------------------
+    // EDIT PLAYER LIST
+    // -----------------------------------------------
+
+    const soldPlayers =
+      state.players.filter(
+        p => p.status === "sold"
+      );
+
+
+    $("editPlayer").innerHTML =
+      soldPlayers.length
+
+      ?
+
+      soldPlayers.map(p => {
+
+        const index =
+          state.players.indexOf(p);
+
+        return `
+
+          <option value="${index}">
+
+            ${index + 1}.
+            ${p.name}
+            — ${p.team}
+            — ${fmt(p.amount)}
+
+          </option>
+
+        `;
+
+      }).join("")
+
+      :
+
+      `<option value="">
+        No sold players
+      </option>`;
+
+
+    // -----------------------------------------------
+    // EDIT TEAM LIST
+    // -----------------------------------------------
+
+    $("editTeam").innerHTML =
+      state.teams.map((t,i) => `
+
+        <option value="${i}">
+
+          ${t.name}
+          (${fmt(t.budget - t.spent)} left)
+
+        </option>
+
+      `).join("");
+
   }
 
 }
 
 
-// --------------------------------------------------
+// ==================================================
 // LIVE BID
-// --------------------------------------------------
+// ==================================================
 
 function bid(){
 
@@ -973,13 +1250,21 @@ function bid(){
 }
 
 
-// --------------------------------------------------
+// ==================================================
 // SOLD
-// --------------------------------------------------
+// ==================================================
 
 function sold(){
 
   if(!admin) return;
+
+  if(
+    !confirm(
+      "Sell this player with the selected team and bid?"
+    )
+  ){
+    return;
+  }
 
   socket.emit("sold", {
 
@@ -994,22 +1279,30 @@ function sold(){
 }
 
 
-// --------------------------------------------------
+// ==================================================
 // UNSOLD
-// --------------------------------------------------
+// ==================================================
 
 function unsold(){
 
   if(!admin) return;
+
+  if(
+    !confirm(
+      "Mark this player as UNSOLD?"
+    )
+  ){
+    return;
+  }
 
   socket.emit("unsold");
 
 }
 
 
-// --------------------------------------------------
+// ==================================================
 // NEXT
-// --------------------------------------------------
+// ==================================================
 
 function next(){
 
@@ -1020,32 +1313,295 @@ function next(){
 }
 
 
-// --------------------------------------------------
-// PLAYER SELECTION
-// --------------------------------------------------
+// ==================================================
+// UNDO
+// ==================================================
 
-$("selPlayer").onchange = () => {
+function undoSale(){
 
   if(!admin) return;
 
-  socket.emit(
-    "select",
-    Number($("selPlayer").value)
-  );
+  if(
+    !confirm(
+      "Undo the LAST SALE?\n\n" +
+      "The player will return to pending " +
+      "and the team's points will be restored."
+    )
+  ){
+    return;
+  }
 
-};
+  socket.emit("undoSale");
+
+}
 
 
-// --------------------------------------------------
+// ==================================================
+// EDIT SALE
+// ==================================================
+
+function editSale(){
+
+  if(!admin) return;
+
+  const playerIndex =
+    $("editPlayer").value;
+
+  if(playerIndex === ""){
+
+    showError(
+      "There are no sold players to edit."
+    );
+
+    return;
+  }
+
+  const player =
+    state.players[Number(playerIndex)];
+
+  const teamIndex =
+    $("editTeam").value;
+
+  const amount =
+    $("editAmount").value;
+
+  if(!player){
+
+    showError(
+      "Player not found."
+    );
+
+    return;
+  }
+
+  if(
+    !confirm(
+      `Edit ${player.name}?\n\n` +
+      `New team: ${
+        state.teams[Number(teamIndex)].name
+      }\n` +
+      `New bid: ${amount}`
+    )
+  ){
+    return;
+  }
+
+  socket.emit("editSale", {
+
+    playerIndex:
+      Number(playerIndex),
+
+    teamIndex:
+      Number(teamIndex),
+
+    amount:
+      Number(amount)
+
+  });
+
+}
+
+
+// ==================================================
+// EDIT PLAYER CHANGE
+// ==================================================
+
+$("editPlayer").addEventListener(
+  "change",
+  () => {
+
+    if(!state) return;
+
+    const index =
+      Number($("editPlayer").value);
+
+    const p =
+      state.players[index];
+
+    if(!p) return;
+
+    $("editAmount").value =
+      p.amount || 200;
+
+    const teamIndex =
+      state.teams.findIndex(
+        t => t.name === p.team
+      );
+
+    if(teamIndex >= 0){
+
+      $("editTeam").value =
+        teamIndex;
+
+    }
+
+  }
+);
+
+
+// ==================================================
+// PLAYER SELECTION
+// ==================================================
+
+$("selPlayer").addEventListener(
+  "change",
+  () => {
+
+    if(!admin) return;
+
+    socket.emit(
+      "select",
+      Number($("selPlayer").value)
+    );
+
+  }
+);
+
+
+// ==================================================
+// EXCEL DOWNLOAD
+// ==================================================
+
+function downloadExcel(){
+
+  if(!admin) return;
+
+  if(!state){
+
+    alert(
+      "Auction data is not available."
+    );
+
+    return;
+  }
+
+
+  let csv = "";
+
+  // -----------------------------------------------
+  // TITLE
+  // -----------------------------------------------
+
+  csv += "CRICKET AUCTION FINAL SQUADS\n\n";
+
+
+  // -----------------------------------------------
+  // TEAM SUMMARY
+  // -----------------------------------------------
+
+  csv +=
+    "Team,Players Bought,Total Spent,Remaining Points\n";
+
+
+  state.teams.forEach(team => {
+
+    csv +=
+      `"${team.name}",` +
+      `${team.players.length},` +
+      `${team.spent},` +
+      `${team.budget - team.spent}\n`;
+
+  });
+
+
+  csv += "\n\n";
+
+
+  // -----------------------------------------------
+  // PLAYER DETAILS
+  // -----------------------------------------------
+
+  csv +=
+    "Team,Player,Bid Amount\n";
+
+
+  state.teams.forEach(team => {
+
+    team.players.forEach(player => {
+
+      csv +=
+        `"${team.name}",` +
+        `"${player.name}",` +
+        `${player.amount}\n`;
+
+    });
+
+  });
+
+
+  csv += "\n\n";
+
+
+  // -----------------------------------------------
+  // ALL PLAYER RESULTS
+  // -----------------------------------------------
+
+  csv +=
+    "Player,Status,Team,Bid Amount\n";
+
+
+  state.players.forEach(player => {
+
+    csv +=
+      `"${player.name}",` +
+      `"${player.status}",` +
+      `"${player.team || ""}",` +
+      `${player.amount || ""}\n`;
+
+  });
+
+
+  // -----------------------------------------------
+  // DOWNLOAD CSV
+  // -----------------------------------------------
+
+  const blob =
+    new Blob(
+      [csv],
+      {
+        type:
+          "text/csv;charset=utf-8;"
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(blob);
+
+
+  const a =
+    document.createElement("a");
+
+
+  a.href = url;
+
+  a.download =
+    "Cricket_Auction_Final_Squads.csv";
+
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+
+}
+
+
+// ==================================================
 // ENTER KEY
-// --------------------------------------------------
+// ==================================================
 
 $("pin").addEventListener(
   "keydown",
   e => {
 
     if(e.key === "Enter"){
+
       login();
+
     }
 
   }
