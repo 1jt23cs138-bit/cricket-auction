@@ -189,10 +189,6 @@ th{
   flex-wrap:wrap
 }
 
-/* -----------------------------------------------
-   ADMIN BUTTONS
------------------------------------------------- */
-
 .undo{
   background:#fff3cd;
   border-color:#e0b94f;
@@ -217,9 +213,10 @@ th{
   color:#8b1a1a
 }
 
-/* -----------------------------------------------
+
+/* ==================================================
    ANIMATIONS
------------------------------------------------- */
+================================================== */
 
 @keyframes pulseBid{
 
@@ -240,18 +237,18 @@ th{
 @keyframes soldFlash{
 
   0%{
-    transform:scale(1);
-    box-shadow:0 0 0 rgba(0,0,0,0)
+    transform:scale(1)
   }
 
   50%{
     transform:scale(1.05);
-    box-shadow:0 0 35px rgba(30,180,80,.5)
+    box-shadow:
+      0 0 35px
+      rgba(30,180,80,.5)
   }
 
   100%{
-    transform:scale(1);
-    box-shadow:0 0 0 rgba(0,0,0,0)
+    transform:scale(1)
   }
 
 }
@@ -271,22 +268,27 @@ th{
 }
 
 .bid-animation{
-  animation:pulseBid .45s ease
+  animation:
+    pulseBid .45s ease
 }
 
 .sold-animation{
-  animation:soldFlash .8s ease
+  animation:
+    soldFlash .8s ease
 }
 
 .next-animation{
-  animation:nextPlayer .5s ease
+  animation:
+    nextPlayer .5s ease
 }
 
 </style>
 
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -294,7 +296,9 @@ th{
 
 <div>
 
-<h1>🏏 Cricket Auction LIVE</h1>
+<h1>
+🏏 Cricket Auction LIVE
+</h1>
 
 <div>
 One link • Admin + Viewer
@@ -314,7 +318,9 @@ Viewer
 <main>
 
 
-<!-- ENTRY -->
+<!-- ==================================================
+     ENTRY
+================================================== -->
 
 <section
   id="choice"
@@ -345,7 +351,9 @@ Choose how to enter
 </section>
 
 
-<!-- LOGIN -->
+<!-- ==================================================
+     LOGIN
+================================================== -->
 
 <section
   id="login"
@@ -378,7 +386,9 @@ Enter
 </section>
 
 
-<!-- ADMIN -->
+<!-- ==================================================
+     ADMIN
+================================================== -->
 
 <section
   id="admin"
@@ -390,6 +400,7 @@ Enter
 <h2>
 🛠️ Admin Control
 </h2>
+
 
 <div class="grid">
 
@@ -442,6 +453,7 @@ Team
 📢 UPDATE LIVE BID
 </button>
 
+
 <button
   class="primary"
   onclick="sold()"
@@ -449,11 +461,13 @@ Team
 🔨 SOLD
 </button>
 
+
 <button
   onclick="unsold()"
 >
 ❌ UNSOLD
 </button>
+
 
 <button
   onclick="next()"
@@ -463,12 +477,18 @@ NEXT ▶
 
 </div>
 
+
 <hr>
 
+
+<!-- ==================================================
+     CORRECTIONS
+================================================== -->
 
 <h3>
 🔧 Corrections
 </h3>
+
 
 <div class="grid">
 
@@ -512,8 +532,9 @@ New Bid Amount
   class="undo"
   onclick="undoSale()"
 >
-↩️ UNDO LAST SALE
+↩️ UNDO LAST ACTION
 </button>
+
 
 <button
   class="edit"
@@ -528,28 +549,83 @@ New Bid Amount
 <hr>
 
 
+<!-- ==================================================
+     RENAME TEAMS
+================================================== -->
+
+<h3>
+🏷️ Rename Teams
+</h3>
+
+
+<div class="grid">
+
+<label>
+
+Team
+
+<select id="renameTeam"></select>
+
+</label>
+
+
+<label>
+
+New Team Name
+
+<input
+  id="newTeamName"
+  type="text"
+  placeholder="Example: Royal Challengers"
+>
+
+</label>
+
+</div>
+
+
+<button
+  class="edit"
+  onclick="renameTeam()"
+>
+✏️ SAVE TEAM NAME
+</button>
+
+
+<hr>
+
+
+<!-- ==================================================
+     EXPORT
+================================================== -->
+
 <h3>
 📊 Export
 </h3>
+
 
 <button
   class="excel"
   onclick="downloadExcel()"
 >
-📥 DOWNLOAD FINAL SQUADS AS EXCEL
+📥 DOWNLOAD FINAL SQUADS
 </button>
+
 
 </div>
 
 </section>
 
 
-<!-- AUCTION -->
+<!-- ==================================================
+     AUCTION
+================================================== -->
 
 <section
   id="auction"
   class="hidden"
 >
+
 
 <div
   id="teams"
@@ -566,19 +642,24 @@ New Bid Amount
 CURRENT PLAYER
 </div>
 
+
 <h2 id="currentPlayer"></h2>
+
 
 <div
   id="currentNo"
   class="small"
 ></div>
 
+
 <div
   id="liveBid"
   class="big"
 ></div>
 
+
 <div id="liveTeam"></div>
+
 
 <div id="result"></div>
 
@@ -591,6 +672,7 @@ CURRENT PLAYER
 📋 Player Results
 </h2>
 
+
 <div class="scroll">
 
 <table>
@@ -600,18 +682,21 @@ CURRENT PLAYER
 <tr>
 
 <th>#</th>
+
 <th>Player</th>
+
 <th>Status</th>
+
 <th>Team</th>
+
 <th>Amount</th>
 
 </tr>
 
 </thead>
 
-<tbody
-  id="rows"
-></tbody>
+
+<tbody id="rows"></tbody>
 
 </table>
 
@@ -621,18 +706,26 @@ CURRENT PLAYER
 
 </section>
 
+
 </main>
 
 
 <script src="/socket.io/socket.io.js"></script>
 
+
 <script>
 
-const socket = io();
+const socket =
+  io();
 
-let state = null;
 
-let admin = false;
+let state =
+  null;
+
+
+let admin =
+  false;
+
 
 let adminToken =
   localStorage.getItem(
@@ -640,12 +733,18 @@ let adminToken =
   ) || "";
 
 
-const $ = x =>
+const $ =
+  x =>
   document.getElementById(x);
 
 
-const fmt = n =>
-  Number(n || 0).toLocaleString("en-IN");
+const fmt =
+  n =>
+  Number(
+    n || 0
+  ).toLocaleString(
+    "en-IN"
+  );
 
 
 // ==================================================
@@ -654,21 +753,33 @@ const fmt = n =>
 
 function showAdmin(){
 
-  $("choice").classList.add("hidden");
+  $("choice")
+    .classList
+    .add("hidden");
 
-  $("login").classList.remove("hidden");
+
+  $("login")
+    .classList
+    .remove("hidden");
+
 
   $("mode").textContent =
     "🔐 Admin Login";
+
 
   if(adminToken){
 
     $("loginMsg").textContent =
       "Restoring Admin session...";
 
-    socket.emit("login", {
-      token: adminToken
-    });
+
+    socket.emit(
+      "login",
+      {
+        token:
+          adminToken
+      }
+    );
 
   }
 
@@ -677,9 +788,15 @@ function showAdmin(){
 
 function showViewer(){
 
-  $("choice").classList.add("hidden");
+  $("choice")
+    .classList
+    .add("hidden");
 
-  $("auction").classList.remove("hidden");
+
+  $("auction")
+    .classList
+    .remove("hidden");
+
 
   $("mode").textContent =
     "👀 Viewer";
@@ -694,7 +811,10 @@ function showViewer(){
 function login(){
 
   const pin =
-    $("pin").value.trim();
+    $("pin")
+      .value
+      .trim();
+
 
   if(!pin){
 
@@ -702,78 +822,119 @@ function login(){
       "Please enter the Admin PIN.";
 
     return;
+
   }
+
 
   $("loginMsg").textContent =
     "Checking Admin access...";
 
-  socket.emit("login", {
-    pin: pin,
-    token: adminToken
-  });
+
+  socket.emit(
+    "login",
+    {
+
+      pin:
+        pin,
+
+      token:
+        adminToken
+
+    }
+  );
 
 }
 
 
-socket.on("login", response => {
+socket.on(
+  "login",
+  response => {
 
-  if(
-    !response ||
-    response.ok !== true
-  ){
 
-    admin = false;
+    if(
+      !response ||
+      response.ok !== true
+    ){
+
+      admin =
+        false;
+
+
+      $("loginMsg").textContent =
+        response?.message ||
+        "Admin login failed.";
+
+      return;
+
+    }
+
+
+    if(response.token){
+
+      adminToken =
+        response.token;
+
+
+      localStorage.setItem(
+        "cricketAuctionAdminToken",
+        adminToken
+      );
+
+    }
+
+
+    admin =
+      true;
+
+
+    $("login")
+      .classList
+      .add("hidden");
+
+
+    $("auction")
+      .classList
+      .remove("hidden");
+
+
+    $("admin")
+      .classList
+      .remove("hidden");
+
+
+    $("mode").textContent =
+      "🔐 ADMIN";
+
 
     $("loginMsg").textContent =
-      response?.message ||
-      "Admin login failed.";
+      "";
 
-    return;
-  }
 
-  if(response.token){
-
-    adminToken =
-      response.token;
-
-    localStorage.setItem(
-      "cricketAuctionAdminToken",
-      adminToken
-    );
+    render();
 
   }
-
-  admin = true;
-
-  $("login").classList.add("hidden");
-
-  $("auction").classList.remove("hidden");
-
-  $("admin").classList.remove("hidden");
-
-  $("mode").textContent =
-    "🔐 ADMIN";
-
-  render();
-
-});
+);
 
 
 // ==================================================
 // STATE
 // ==================================================
 
-socket.on("update", s => {
+socket.on(
+  "update",
+  s => {
 
-  state = s;
+    state =
+      s;
 
-  render();
+    render();
 
-});
+  }
+);
 
 
 // ==================================================
-// MESSAGES
+// ERROR
 // ==================================================
 
 function showError(message){
@@ -781,101 +942,198 @@ function showError(message){
   $("err").textContent =
     message;
 
-  $("err").classList.remove("hidden");
 
-  setTimeout(() => {
+  $("err")
+    .classList
+    .remove("hidden");
 
-    $("err").classList.add("hidden");
 
-  },3000);
+  setTimeout(
+    () => {
+
+      $("err")
+        .classList
+        .add("hidden");
+
+    },
+    3000
+  );
 
 }
 
 
-socket.on("errorMsg", showError);
-
-
-socket.on("successMsg", message => {
-
-  alert(message);
-
-});
+socket.on(
+  "errorMsg",
+  showError
+);
 
 
 // ==================================================
-// BID ANIMATION
+// SUCCESS
 // ==================================================
 
-socket.on("bidAnimation", () => {
+socket.on(
+  "successMsg",
+  message => {
 
-  $("liveBid").classList.remove(
-    "bid-animation"
-  );
+    alert(message);
 
-  void $("liveBid").offsetWidth;
-
-  $("liveBid").classList.add(
-    "bid-animation"
-  );
-
-});
+  }
+);
 
 
 // ==================================================
-// SOLD ANIMATION
+// ANIMATIONS
 // ==================================================
 
-socket.on("soldAnimation", data => {
+socket.on(
+  "bidAnimation",
+  () => {
 
-  $("auctionCard").classList.remove(
-    "sold-animation"
-  );
-
-  void $("auctionCard").offsetWidth;
-
-  $("auctionCard").classList.add(
-    "sold-animation"
-  );
-
-});
+    $("liveBid")
+      .classList
+      .remove(
+        "bid-animation"
+      );
 
 
-// ==================================================
-// NEXT ANIMATION
-// ==================================================
-
-socket.on("nextAnimation", () => {
-
-  $("auctionCard").classList.remove(
-    "next-animation"
-  );
-
-  void $("auctionCard").offsetWidth;
-
-  $("auctionCard").classList.add(
-    "next-animation"
-  );
-
-});
+    void $("liveBid")
+      .offsetWidth;
 
 
-// ==================================================
-// UNSOLD ANIMATION
-// ==================================================
+    $("liveBid")
+      .classList
+      .add(
+        "bid-animation"
+      );
 
-socket.on("unsoldAnimation", () => {
+  }
+);
 
-  $("auctionCard").classList.remove(
-    "sold-animation"
-  );
 
-  void $("auctionCard").offsetWidth;
+socket.on(
+  "soldAnimation",
+  () => {
 
-  $("auctionCard").classList.add(
-    "sold-animation"
-  );
+    $("auctionCard")
+      .classList
+      .remove(
+        "sold-animation"
+      );
 
-});
+
+    void $("auctionCard")
+      .offsetWidth;
+
+
+    $("auctionCard")
+      .classList
+      .add(
+        "sold-animation"
+      );
+
+  }
+);
+
+
+socket.on(
+  "nextAnimation",
+  () => {
+
+    $("auctionCard")
+      .classList
+      .remove(
+        "next-animation"
+      );
+
+
+    void $("auctionCard")
+      .offsetWidth;
+
+
+    $("auctionCard")
+      .classList
+      .add(
+        "next-animation"
+      );
+
+  }
+);
+
+
+socket.on(
+  "unsoldAnimation",
+  () => {
+
+    $("auctionCard")
+      .classList
+      .remove(
+        "sold-animation"
+      );
+
+
+    void $("auctionCard")
+      .offsetWidth;
+
+
+    $("auctionCard")
+      .classList
+      .add(
+        "sold-animation"
+      );
+
+  }
+);
+
+
+socket.on(
+  "undoAnimation",
+  () => {
+
+    $("auctionCard")
+      .classList
+      .remove(
+        "next-animation"
+      );
+
+
+    void $("auctionCard")
+      .offsetWidth;
+
+
+    $("auctionCard")
+      .classList
+      .add(
+        "next-animation"
+      );
+
+  }
+);
+
+
+socket.on(
+  "editAnimation",
+  () => {
+
+    $("auctionCard")
+      .classList
+      .remove(
+        "bid-animation"
+      );
+
+
+    void $("auctionCard")
+      .offsetWidth;
+
+
+    $("auctionCard")
+      .classList
+      .add(
+        "bid-animation"
+      );
+
+  }
+);
 
 
 // ==================================================
@@ -884,12 +1142,18 @@ socket.on("unsoldAnimation", () => {
 
 function render(){
 
-  if(!state) return;
+  if(!state)
+    return;
+
 
   const p =
-    state.players[state.current];
+    state.players[
+      state.current
+    ];
 
-  if(!p) return;
+
+  if(!p)
+    return;
 
 
   // ==================================================
@@ -897,129 +1161,181 @@ function render(){
   // ==================================================
 
   $("teams").innerHTML =
-    state.teams.map(t => `
+    state.teams
+      .map(
+        t => `
 
-      <div class="card">
+        <div class="card">
 
-        <h3>
-          ${t.name}
-        </h3>
+          <h3>
+            ${t.name}
+          </h3>
 
-        <div class="small">
-          REMAINING
-        </div>
+          <div class="small">
+            REMAINING
+          </div>
 
-        <div class="value">
-          ${fmt(t.budget - t.spent)}
-        </div>
+          <div class="value">
+            ${fmt(
+              t.budget -
+              t.spent
+            )}
+          </div>
 
-        <div class="small">
-          Spent ${fmt(t.spent)}
-          • ${t.players.length} players
-        </div>
+          <div class="small">
 
-        ${
-          t.players.length
-          ?
-          `
-          <div style="margin-top:12px">
+            Spent
+            ${fmt(t.spent)}
 
-            <b>Players Bought</b>
+            •
+            ${t.players.length}
+            players
 
-            <div class="scroll">
+          </div>
 
-              <table
-                style="min-width:100%"
-              >
 
-                <thead>
+          ${
+            t.players.length
 
-                  <tr>
+            ?
 
-                    <th>
-                      Player
-                    </th>
+            `
 
-                    <th>
-                      Bid
-                    </th>
+            <div
+              style="margin-top:12px"
+            >
 
-                  </tr>
+              <b>
+                Players Bought
+              </b>
 
-                </thead>
 
-                <tbody>
+              <div class="scroll">
 
-                  ${t.players.map(player => `
+                <table
+                  style="min-width:100%"
+                >
+
+                  <thead>
 
                     <tr>
 
-                      <td>
-                        ${player.name}
-                      </td>
+                      <th>
+                        Player
+                      </th>
 
-                      <td>
-                        ${fmt(player.amount)}
-                      </td>
+                      <th>
+                        Bid
+                      </th>
 
                     </tr>
 
-                  `).join("")}
+                  </thead>
 
-                </tbody>
 
-              </table>
+                  <tbody>
+
+                    ${
+                      t.players
+                        .map(
+                          player => `
+
+                        <tr>
+
+                          <td>
+                            ${player.name}
+                          </td>
+
+                          <td>
+                            ${fmt(
+                              player.amount
+                            )}
+                          </td>
+
+                        </tr>
+
+                      `
+                        )
+                        .join("")
+                    }
+
+                  </tbody>
+
+                </table>
+
+              </div>
 
             </div>
 
-          </div>
-          `
-          :
-          `
-          <div
-            class="small"
-            style="margin-top:12px"
-          >
-            No players bought yet
-          </div>
-          `
-        }
+            `
 
-      </div>
+            :
 
-    `).join("");
+            `
+
+            <div
+              class="small"
+              style="margin-top:12px"
+            >
+              No players bought yet
+            </div>
+
+            `
+          }
+
+        </div>
+
+      `
+      )
+      .join("");
 
 
   // ==================================================
   // CURRENT PLAYER
   // ==================================================
 
-  $("currentPlayer").textContent =
+  $("currentPlayer")
+    .textContent =
     p.name;
 
-  $("currentNo").textContent =
-    `Player ${state.current + 1}
-     of ${state.players.length}
-     • ${p.status}`;
 
-  $("liveBid").textContent =
-    fmt(state.liveBid || 200);
+  $("currentNo")
+    .textContent =
+    `Player ${
+      state.current + 1
+    } of ${
+      state.players.length
+    } • ${p.status}`;
+
+
+  $("liveBid")
+    .textContent =
+    fmt(
+      state.liveBid ||
+      200
+    );
 
 
   if(
     state.liveBidTeam !== "" &&
     state.liveBidTeam !== null &&
-    state.teams[state.liveBidTeam]
+    state.teams[
+      state.liveBidTeam
+    ]
   ){
 
-    $("liveTeam").textContent =
+    $("liveTeam")
+      .textContent =
       "Current bid: " +
-      state.teams[state.liveBidTeam].name;
+      state.teams[
+        state.liveBidTeam
+      ].name;
 
   }
   else{
 
-    $("liveTeam").textContent =
+    $("liveTeam")
+      .textContent =
       "Base price: 200";
 
   }
@@ -1029,9 +1345,13 @@ function render(){
   // RESULT
   // ==================================================
 
-  if(p.status === "sold"){
+  if(
+    p.status ===
+    "sold"
+  ){
 
-    $("result").innerHTML = `
+    $("result")
+      .innerHTML = `
 
       <div class="notice sold">
 
@@ -1047,9 +1367,13 @@ function render(){
 
   }
 
-  else if(p.status === "unsold"){
+  else if(
+    p.status ===
+    "unsold"
+  ){
 
-    $("result").innerHTML = `
+    $("result")
+      .innerHTML = `
 
       <div class="notice unsold">
 
@@ -1063,7 +1387,8 @@ function render(){
 
   else{
 
-    $("result").innerHTML = `
+    $("result")
+      .innerHTML = `
 
       <div class="notice live">
 
@@ -1080,149 +1405,251 @@ function render(){
   // PLAYER RESULTS
   // ==================================================
 
-  $("rows").innerHTML =
-    state.players.map((p,i) => `
+  $("rows")
+    .innerHTML =
+    state.players
+      .map(
+        (player, i) => `
 
-      <tr>
+        <tr>
 
-        <td>${i + 1}</td>
+          <td>
+            ${i + 1}
+          </td>
 
-        <td>${p.name}</td>
+          <td>
+            ${player.name}
+          </td>
 
-        <td>
+          <td>
 
-          <span
-            class="status ${p.status}"
-          >
-            ${p.status}
-          </span>
+            <span
+              class="status ${
+                player.status
+              }"
+            >
 
-        </td>
+              ${player.status}
 
-        <td>
-          ${p.team || "-"}
-        </td>
+            </span>
 
-        <td>
-          ${
-            p.amount
-            ? fmt(p.amount)
-            : "-"
-          }
-        </td>
+          </td>
 
-      </tr>
+          <td>
+            ${player.team || "-"}
+          </td>
 
-    `).join("");
+          <td>
+
+            ${
+              player.amount
+              ?
+              fmt(player.amount)
+              :
+              "-"
+            }
+
+          </td>
+
+        </tr>
+
+      `
+      )
+      .join("");
 
 
   // ==================================================
-  // ADMIN
+  // ADMIN CONTROLS
   // ==================================================
 
   if(admin){
 
-    $("selPlayer").innerHTML =
-      state.players.map((p,i) => `
+    // Player
+    $("selPlayer")
+      .innerHTML =
+      state.players
+        .map(
+          (player, i) => `
 
-        <option
-          value="${i}"
-          ${i === state.current
-            ? "selected"
-            : ""
-          }
-        >
+          <option
+            value="${i}"
+            ${
+              i ===
+              state.current
+              ?
+              "selected"
+              :
+              ""
+            }
+          >
 
-          ${i + 1}.
-          ${p.name}
-          —
-          ${p.status}
+            ${i + 1}.
+            ${player.name}
+            —
+            ${player.status}
 
-        </option>
+          </option>
 
-      `).join("");
-
-
-    $("selTeam").innerHTML =
-      state.teams.map((t,i) => `
-
-        <option
-          value="${i}"
-          ${i === Number(state.liveBidTeam)
-            ? "selected"
-            : ""
-          }
-        >
-
-          ${t.name}
-          (${fmt(t.budget - t.spent)} left)
-
-        </option>
-
-      `).join("");
+        `
+        )
+        .join("");
 
 
-    $("amount").value =
-      state.liveBid || 200;
+    // Team
+    $("selTeam")
+      .innerHTML =
+      state.teams
+        .map(
+          (team, i) => `
+
+          <option
+            value="${i}"
+            ${
+              i ===
+              Number(
+                state.liveBidTeam
+              )
+              ?
+              "selected"
+              :
+              ""
+            }
+          >
+
+            ${team.name}
+            (
+            ${fmt(
+              team.budget -
+              team.spent
+            )}
+            left)
+
+          </option>
+
+        `
+        )
+        .join("");
 
 
-    // -----------------------------------------------
-    // EDIT PLAYER LIST
-    // -----------------------------------------------
+    $("amount")
+      .value =
+      state.liveBid ||
+      200;
+
+
+    // ==================================================
+    // EDIT PLAYER
+    // ==================================================
 
     const soldPlayers =
       state.players.filter(
-        p => p.status === "sold"
+        player =>
+          player.status ===
+          "sold"
       );
 
 
-    $("editPlayer").innerHTML =
+    $("editPlayer")
+      .innerHTML =
       soldPlayers.length
 
       ?
 
-      soldPlayers.map(p => {
+      soldPlayers
+        .map(
+          player => {
 
-        const index =
-          state.players.indexOf(p);
+            const index =
+              state.players
+                .indexOf(
+                  player
+                );
 
-        return `
 
-          <option value="${index}">
+            return `
 
-            ${index + 1}.
-            ${p.name}
-            — ${p.team}
-            — ${fmt(p.amount)}
+              <option
+                value="${index}"
+              >
 
-          </option>
+                ${index + 1}.
+                ${player.name}
+                —
+                ${player.team}
+                —
+                ${fmt(
+                  player.amount
+                )}
 
-        `;
+              </option>
 
-      }).join("")
+            `;
+
+          }
+        )
+        .join("")
 
       :
 
-      `<option value="">
+      `
+
+      <option value="">
         No sold players
-      </option>`;
+      </option>
+
+      `;
 
 
-    // -----------------------------------------------
-    // EDIT TEAM LIST
-    // -----------------------------------------------
+    // ==================================================
+    // EDIT TEAM
+    // ==================================================
 
-    $("editTeam").innerHTML =
-      state.teams.map((t,i) => `
+    $("editTeam")
+      .innerHTML =
+      state.teams
+        .map(
+          (team, i) => `
 
-        <option value="${i}">
+          <option
+            value="${i}"
+          >
 
-          ${t.name}
-          (${fmt(t.budget - t.spent)} left)
+            ${team.name}
+            (
+            ${fmt(
+              team.budget -
+              team.spent
+            )}
+            left)
 
-        </option>
+          </option>
 
-      `).join("");
+        `
+        )
+        .join("");
+
+
+    // ==================================================
+    // RENAME TEAM
+    // ==================================================
+
+    $("renameTeam")
+      .innerHTML =
+      state.teams
+        .map(
+          (team, i) => `
+
+          <option
+            value="${i}"
+          >
+
+            ${team.name}
+
+          </option>
+
+        `
+        )
+        .join("");
 
   }
 
@@ -1230,22 +1657,27 @@ function render(){
 
 
 // ==================================================
-// LIVE BID
+// BID
 // ==================================================
 
 function bid(){
 
-  if(!admin) return;
+  if(!admin)
+    return;
 
-  socket.emit("bid", {
 
-    amount:
-      $("amount").value,
+  socket.emit(
+    "bid",
+    {
 
-    team:
-      $("selTeam").value
+      amount:
+        $("amount").value,
 
-  });
+      team:
+        $("selTeam").value
+
+    }
+  );
 
 }
 
@@ -1256,25 +1688,33 @@ function bid(){
 
 function sold(){
 
-  if(!admin) return;
+  if(!admin)
+    return;
+
 
   if(
     !confirm(
       "Sell this player with the selected team and bid?"
     )
   ){
+
     return;
+
   }
 
-  socket.emit("sold", {
 
-    amount:
-      $("amount").value,
+  socket.emit(
+    "sold",
+    {
 
-    team:
-      $("selTeam").value
+      amount:
+        $("amount").value,
 
-  });
+      team:
+        $("selTeam").value
+
+    }
+  );
 
 }
 
@@ -1285,17 +1725,24 @@ function sold(){
 
 function unsold(){
 
-  if(!admin) return;
+  if(!admin)
+    return;
+
 
   if(
     !confirm(
       "Mark this player as UNSOLD?"
     )
   ){
+
     return;
+
   }
 
-  socket.emit("unsold");
+
+  socket.emit(
+    "unsold"
+  );
 
 }
 
@@ -1306,9 +1753,13 @@ function unsold(){
 
 function next(){
 
-  if(!admin) return;
+  if(!admin)
+    return;
 
-  socket.emit("next");
+
+  socket.emit(
+    "next"
+  );
 
 }
 
@@ -1319,19 +1770,25 @@ function next(){
 
 function undoSale(){
 
-  if(!admin) return;
+  if(!admin)
+    return;
+
 
   if(
     !confirm(
-      "Undo the LAST SALE?\n\n" +
-      "The player will return to pending " +
-      "and the team's points will be restored."
+      "Undo the LAST ACTION?\n\n" +
+      "The previous change will be reversed."
     )
   ){
+
     return;
+
   }
 
-  socket.emit("undoSale");
+
+  socket.emit(
+    "undoSale"
+  );
 
 }
 
@@ -1342,28 +1799,46 @@ function undoSale(){
 
 function editSale(){
 
-  if(!admin) return;
+  if(!admin)
+    return;
+
 
   const playerIndex =
     $("editPlayer").value;
 
-  if(playerIndex === ""){
+
+  if(
+    playerIndex === ""
+  ){
 
     showError(
       "There are no sold players to edit."
     );
 
     return;
+
   }
 
+
   const player =
-    state.players[Number(playerIndex)];
+    state.players[
+      Number(
+        playerIndex
+      )
+    ];
+
 
   const teamIndex =
-    $("editTeam").value;
+    Number(
+      $("editTeam").value
+    );
+
 
   const amount =
-    $("editAmount").value;
+    Number(
+      $("editAmount").value
+    );
+
 
   if(!player){
 
@@ -1372,32 +1847,58 @@ function editSale(){
     );
 
     return;
+
   }
+
+
+  if(
+    !amount ||
+    amount < 200
+  ){
+
+    showError(
+      "Minimum bid is 200."
+    );
+
+    return;
+
+  }
+
 
   if(
     !confirm(
       `Edit ${player.name}?\n\n` +
       `New team: ${
-        state.teams[Number(teamIndex)].name
+        state.teams[
+          teamIndex
+        ].name
       }\n` +
       `New bid: ${amount}`
     )
   ){
+
     return;
+
   }
 
-  socket.emit("editSale", {
 
-    playerIndex:
-      Number(playerIndex),
+  socket.emit(
+    "editSale",
+    {
 
-    teamIndex:
-      Number(teamIndex),
+      playerIndex:
+        Number(
+          playerIndex
+        ),
 
-    amount:
-      Number(amount)
+      teamIndex:
+        teamIndex,
 
-  });
+      amount:
+        amount
+
+    }
+  );
 
 }
 
@@ -1406,65 +1907,173 @@ function editSale(){
 // EDIT PLAYER CHANGE
 // ==================================================
 
-$("editPlayer").addEventListener(
-  "change",
-  () => {
+$("editPlayer")
+  .addEventListener(
+    "change",
+    () => {
 
-    if(!state) return;
+      if(!state)
+        return;
 
-    const index =
-      Number($("editPlayer").value);
 
-    const p =
-      state.players[index];
+      const index =
+        Number(
+          $("editPlayer").value
+        );
 
-    if(!p) return;
 
-    $("editAmount").value =
-      p.amount || 200;
+      const p =
+        state.players[
+          index
+        ];
 
-    const teamIndex =
-      state.teams.findIndex(
-        t => t.name === p.team
-      );
 
-    if(teamIndex >= 0){
+      if(!p)
+        return;
 
-      $("editTeam").value =
-        teamIndex;
+
+      $("editAmount")
+        .value =
+        p.amount ||
+        200;
+
+
+      const teamIndex =
+        state.teams.findIndex(
+          team =>
+            team.name ===
+            p.team
+        );
+
+
+      if(
+        teamIndex >= 0
+      ){
+
+        $("editTeam")
+          .value =
+          teamIndex;
+
+      }
 
     }
-
-  }
-);
+  );
 
 
 // ==================================================
 // PLAYER SELECTION
 // ==================================================
 
-$("selPlayer").addEventListener(
-  "change",
-  () => {
+$("selPlayer")
+  .addEventListener(
+    "change",
+    () => {
 
-    if(!admin) return;
+      if(!admin)
+        return;
 
-    socket.emit(
-      "select",
-      Number($("selPlayer").value)
-    );
 
-  }
-);
+      socket.emit(
+        "select",
+        Number(
+          $("selPlayer").value
+        )
+      );
+
+    }
+  );
 
 
 // ==================================================
-// EXCEL DOWNLOAD
+// RENAME TEAM
+// ==================================================
+
+function renameTeam(){
+
+  if(!admin)
+    return;
+
+
+  const teamIndex =
+    Number(
+      $("renameTeam").value
+    );
+
+
+  const newName =
+    $("newTeamName")
+      .value
+      .trim();
+
+
+  if(!newName){
+
+    showError(
+      "Please enter a team name."
+    );
+
+    return;
+
+  }
+
+
+  const team =
+    state.teams[
+      teamIndex
+    ];
+
+
+  if(!team){
+
+    showError(
+      "Team not found."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !confirm(
+      `Rename "${team.name}" to "${newName}"?`
+    )
+  ){
+
+    return;
+
+  }
+
+
+  socket.emit(
+    "renameTeam",
+    {
+
+      teamIndex:
+        teamIndex,
+
+      newName:
+        newName
+
+    }
+  );
+
+
+  $("newTeamName")
+    .value = "";
+
+}
+
+
+// ==================================================
+// EXCEL / CSV DOWNLOAD
 // ==================================================
 
 function downloadExcel(){
 
-  if(!admin) return;
+  if(!admin)
+    return;
+
 
   if(!state){
 
@@ -1473,87 +2082,84 @@ function downloadExcel(){
     );
 
     return;
+
   }
 
 
   let csv = "";
 
-  // -----------------------------------------------
-  // TITLE
-  // -----------------------------------------------
 
-  csv += "CRICKET AUCTION FINAL SQUADS\n\n";
+  csv +=
+    "CRICKET AUCTION FINAL SQUADS\n\n";
 
 
-  // -----------------------------------------------
-  // TEAM SUMMARY
-  // -----------------------------------------------
-
+  // Team summary
   csv +=
     "Team,Players Bought,Total Spent,Remaining Points\n";
 
 
-  state.teams.forEach(team => {
+  state.teams.forEach(
+    team => {
 
-    csv +=
-      `"${team.name}",` +
-      `${team.players.length},` +
-      `${team.spent},` +
-      `${team.budget - team.spent}\n`;
+      csv +=
+        `"${team.name}",` +
+        `${team.players.length},` +
+        `${team.spent},` +
+        `${team.budget -
+          team.spent}\n`;
 
-  });
+    }
+  );
 
 
-  csv += "\n\n";
+  csv +=
+    "\n\n";
 
 
-  // -----------------------------------------------
-  // PLAYER DETAILS
-  // -----------------------------------------------
-
+  // Squad details
   csv +=
     "Team,Player,Bid Amount\n";
 
 
-  state.teams.forEach(team => {
+  state.teams.forEach(
+    team => {
 
-    team.players.forEach(player => {
+      team.players.forEach(
+        player => {
 
-      csv +=
-        `"${team.name}",` +
-        `"${player.name}",` +
-        `${player.amount}\n`;
+          csv +=
+            `"${team.name}",` +
+            `"${player.name}",` +
+            `${player.amount}\n`;
 
-    });
+        }
+      );
 
-  });
+    }
+  );
 
 
-  csv += "\n\n";
+  csv +=
+    "\n\n";
 
 
-  // -----------------------------------------------
-  // ALL PLAYER RESULTS
-  // -----------------------------------------------
-
+  // All players
   csv +=
     "Player,Status,Team,Bid Amount\n";
 
 
-  state.players.forEach(player => {
+  state.players.forEach(
+    player => {
 
-    csv +=
-      `"${player.name}",` +
-      `"${player.status}",` +
-      `"${player.team || ""}",` +
-      `${player.amount || ""}\n`;
+      csv +=
+        `"${player.name}",` +
+        `"${player.status}",` +
+        `"${player.team || ""}",` +
+        `${player.amount || ""}\n`;
 
-  });
+    }
+  );
 
-
-  // -----------------------------------------------
-  // DOWNLOAD CSV
-  // -----------------------------------------------
 
   const blob =
     new Blob(
@@ -1566,26 +2172,41 @@ function downloadExcel(){
 
 
   const url =
-    URL.createObjectURL(blob);
+    URL.createObjectURL(
+      blob
+    );
 
 
   const a =
-    document.createElement("a");
+    document.createElement(
+      "a"
+    );
 
 
-  a.href = url;
+  a.href =
+    url;
+
 
   a.download =
     "Cricket_Auction_Final_Squads.csv";
 
 
-  document.body.appendChild(a);
+  document.body.appendChild(
+    a
+  );
+
 
   a.click();
 
-  document.body.removeChild(a);
 
-  URL.revokeObjectURL(url);
+  document.body.removeChild(
+    a
+  );
+
+
+  URL.revokeObjectURL(
+    url
+  );
 
 }
 
@@ -1594,18 +2215,22 @@ function downloadExcel(){
 // ENTER KEY
 // ==================================================
 
-$("pin").addEventListener(
-  "keydown",
-  e => {
+$("pin")
+  .addEventListener(
+    "keydown",
+    e => {
 
-    if(e.key === "Enter"){
+      if(
+        e.key ===
+        "Enter"
+      ){
 
-      login();
+        login();
+
+      }
 
     }
-
-  }
-);
+  );
 
 </script>
 
