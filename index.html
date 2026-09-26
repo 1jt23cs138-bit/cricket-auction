@@ -1,13 +1,22 @@
 <!doctype html>
 <html>
+
 <head>
+
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
 
 <title>Cricket Auction Live</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box
+}
 
 body{
   margin:0;
@@ -42,7 +51,8 @@ h1,h2{
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  grid-template-columns:
+  repeat(auto-fit,minmax(170px,1fr));
   gap:10px
 }
 
@@ -57,7 +67,9 @@ h1,h2{
   min-width:140px
 }
 
-input,select,button{
+input,
+select,
+button{
   font:inherit;
   min-height:44px;
   border:1px solid #ccd3df;
@@ -69,11 +81,6 @@ input,select,button{
 button{
   font-weight:700;
   cursor:pointer
-}
-
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed
 }
 
 .primary{
@@ -177,6 +184,7 @@ th{
   align-items:center;
   flex-wrap:wrap
 }
+
 </style>
 
 </head>
@@ -188,11 +196,18 @@ th{
 <div class="top">
 
 <div>
+
 <h1>🏏 Cricket Auction LIVE</h1>
-<div>One link • Admin + Viewer</div>
+
+<div>
+One link • Admin + Viewer
 </div>
 
-<div id="mode">Viewer</div>
+</div>
+
+<div id="mode">
+Viewer
+</div>
 
 </div>
 
@@ -201,19 +216,30 @@ th{
 
 <main>
 
-<!-- ENTRY CHOICE -->
 
-<section id="choice" class="card choice center">
+<!-- ENTRY -->
 
-<h2>Choose how to enter</h2>
+<section
+  id="choice"
+  class="card choice center"
+>
+
+<h2>
+Choose how to enter
+</h2>
 
 <div class="row">
 
-<button class="primary" onclick="showAdmin()">
+<button
+  class="primary"
+  onclick="showAdmin()"
+>
 🔐 ADMIN
 </button>
 
-<button onclick="showViewer()">
+<button
+  onclick="showViewer()"
+>
 👀 VIEW AUCTION
 </button>
 
@@ -222,11 +248,16 @@ th{
 </section>
 
 
-<!-- ADMIN LOGIN -->
+<!-- LOGIN -->
 
-<section id="login" class="card hidden">
+<section
+  id="login"
+  class="card hidden"
+>
 
-<h2>Admin Login</h2>
+<h2>
+Admin Login
+</h2>
 
 <input
   id="pin"
@@ -235,26 +266,38 @@ th{
   placeholder="Admin PIN"
 >
 
-<button class="primary" onclick="login()">
+<button
+  class="primary"
+  onclick="login()"
+>
 Enter
 </button>
 
-<p id="loginMsg" class="small"></p>
+<p
+  id="loginMsg"
+  class="small"
+></p>
 
 </section>
 
 
-<!-- ADMIN CONTROLS -->
+<!-- ADMIN -->
 
-<section id="admin" class="hidden">
+<section
+  id="admin"
+  class="hidden"
+>
 
 <div class="card">
 
-<h2>Admin Control</h2>
+<h2>
+Admin Control
+</h2>
 
 <div class="grid">
 
 <label>
+
 Player
 
 <select id="selPlayer"></select>
@@ -263,6 +306,7 @@ Player
 
 
 <label>
+
 Bid Amount
 
 <input
@@ -276,6 +320,7 @@ Bid Amount
 
 
 <label>
+
 Team
 
 <select id="selTeam"></select>
@@ -285,39 +330,35 @@ Team
 </div>
 
 
-<p id="err" class="notice hidden"></p>
+<p
+  id="err"
+  class="notice hidden"
+></p>
 
 
 <div class="row">
 
 <button
-  id="bidBtn"
   class="primary"
   onclick="bid()"
 >
 📢 UPDATE LIVE BID
 </button>
 
-
 <button
-  id="soldBtn"
   class="primary"
   onclick="sold()"
 >
 🔨 SOLD
 </button>
 
-
 <button
-  id="unsoldBtn"
   onclick="unsold()"
 >
 ❌ UNSOLD
 </button>
 
-
 <button
-  id="nextBtn"
   onclick="next()"
 >
 NEXT ▶
@@ -332,15 +373,16 @@ NEXT ▶
 
 <!-- AUCTION -->
 
-<section id="auction" class="hidden">
+<section
+  id="auction"
+  class="hidden"
+>
 
+<div
+  id="teams"
+  class="grid"
+></div>
 
-<!-- TEAMS -->
-
-<div id="teams" class="grid"></div>
-
-
-<!-- CURRENT PLAYER -->
 
 <div class="card center">
 
@@ -350,9 +392,15 @@ CURRENT PLAYER
 
 <h2 id="currentPlayer"></h2>
 
-<div id="currentNo" class="small"></div>
+<div
+  id="currentNo"
+  class="small"
+></div>
 
-<div id="liveBid" class="big"></div>
+<div
+  id="liveBid"
+  class="big"
+></div>
 
 <div id="liveTeam"></div>
 
@@ -360,8 +408,6 @@ CURRENT PLAYER
 
 </div>
 
-
-<!-- PLAYER RESULTS -->
 
 <div class="card">
 
@@ -376,16 +422,20 @@ CURRENT PLAYER
 <thead>
 
 <tr>
+
 <th>#</th>
 <th>Player</th>
 <th>Status</th>
 <th>Team</th>
 <th>Amount</th>
+
 </tr>
 
 </thead>
 
-<tbody id="rows"></tbody>
+<tbody
+  id="rows"
+></tbody>
 
 </table>
 
@@ -409,7 +459,21 @@ let state = null;
 
 let admin = false;
 
-const $ = x => document.getElementById(x);
+
+// --------------------------------------------------
+// ADMIN TOKEN
+// --------------------------------------------------
+
+// This is stored ONLY in this browser.
+// Refreshing the page keeps the Admin session.
+
+let adminToken =
+  localStorage.getItem("cricketAuctionAdminToken") || "";
+
+
+const $ = x =>
+  document.getElementById(x);
+
 
 const fmt = n =>
   Number(n || 0).toLocaleString("en-IN");
@@ -425,10 +489,23 @@ function showAdmin(){
 
   $("login").classList.remove("hidden");
 
-  $("mode").textContent = "🔐 Admin Login";
+  $("mode").textContent =
+    "🔐 Admin Login";
 
-  $("pin").focus();
+  // If this browser already has the
+  // authorized Admin token, automatically
+  // restore the Admin session.
 
+  if(adminToken){
+
+    $("loginMsg").textContent =
+      "Restoring Admin session...";
+
+    socket.emit("login", {
+      token: adminToken
+    });
+
+  }
 }
 
 
@@ -438,7 +515,8 @@ function showViewer(){
 
   $("auction").classList.remove("hidden");
 
-  $("mode").textContent = "👀 Viewer";
+  $("mode").textContent =
+    "👀 Viewer";
 
 }
 
@@ -449,7 +527,8 @@ function showViewer(){
 
 function login(){
 
-  const pin = $("pin").value.trim();
+  const pin =
+    $("pin").value.trim();
 
   if(!pin){
 
@@ -457,22 +536,22 @@ function login(){
       "Please enter the Admin PIN.";
 
     return;
-
   }
 
   $("loginMsg").textContent =
-    "Checking admin access...";
+    "Checking Admin access...";
 
-  socket.emit("login", pin);
+  socket.emit("login", {
+    pin: pin,
+    token: adminToken
+  });
 
 }
 
 
-// IMPORTANT FIX:
-// Server sends an object like:
-// { ok:true }
-// or
-// { ok:false, message:"..." }
+// --------------------------------------------------
+// LOGIN RESPONSE
+// --------------------------------------------------
 
 socket.on("login", response => {
 
@@ -481,16 +560,31 @@ socket.on("login", response => {
     admin = false;
 
     $("loginMsg").textContent =
-      response?.message || "Admin login failed.";
+      response?.message ||
+      "Admin login failed.";
 
     return;
+  }
+
+
+  // Save the secure token in this browser
+
+  if(response.token){
+
+    adminToken = response.token;
+
+    localStorage.setItem(
+      "cricketAuctionAdminToken",
+      adminToken
+    );
 
   }
 
 
-  // Login successful
+  // Admin is authorized
 
   admin = true;
+
 
   $("login").classList.add("hidden");
 
@@ -498,9 +592,23 @@ socket.on("login", response => {
 
   $("admin").classList.remove("hidden");
 
-  $("mode").textContent = "🔐 ADMIN";
+  $("mode").textContent =
+    "🔐 ADMIN";
 
   $("loginMsg").textContent = "";
+
+  render();
+
+});
+
+
+// --------------------------------------------------
+// AUCTION STATE
+// --------------------------------------------------
+
+socket.on("update", s => {
+
+  state = s;
 
   render();
 
@@ -527,14 +635,22 @@ socket.on("errorMsg", m => {
 
 
 // --------------------------------------------------
-// LIVE STATE UPDATE
+// ADMIN LOST
 // --------------------------------------------------
 
-socket.on("update", s => {
+socket.on("adminRevoked", data => {
 
-  state = s;
+  admin = false;
 
-  render();
+  $("admin").classList.add("hidden");
+
+  $("mode").textContent =
+    "👀 Viewer";
+
+  alert(
+    data?.message ||
+    "Admin access was removed."
+  );
 
 });
 
@@ -547,95 +663,108 @@ function render(){
 
   if(!state) return;
 
-  const p = state.players[state.current];
+  const p =
+    state.players[state.current];
 
   if(!p) return;
 
 
   // -----------------------------------------------
-  // TEAM CARDS
+  // TEAMS
   // -----------------------------------------------
 
-  $("teams").innerHTML = state.teams.map(t => `
+  $("teams").innerHTML =
+    state.teams.map(t => `
 
-    <div class="card">
+      <div class="card">
 
-      <h3>${t.name}</h3>
+        <h3>
+          ${t.name}
+        </h3>
 
-      <div class="small">
-        REMAINING
-      </div>
+        <div class="small">
+          REMAINING
+        </div>
 
-      <div class="value">
-        ${fmt(t.budget - t.spent)}
-      </div>
+        <div class="value">
+          ${fmt(t.budget - t.spent)}
+        </div>
 
-      <div class="small">
-        Spent ${fmt(t.spent)}
-        • ${t.players.length} players
-      </div>
+        <div class="small">
+          Spent ${fmt(t.spent)}
+          • ${t.players.length} players
+        </div>
 
-      ${
-        t.players.length
-        ?
-        `
-        <div style="margin-top:12px">
+        ${
+          t.players.length
+          ?
+          `
+          <div style="margin-top:12px">
 
-          <b>Players Bought</b>
+            <b>Players Bought</b>
 
-          <div class="scroll">
+            <div class="scroll">
 
-            <table style="min-width:100%">
+              <table
+                style="min-width:100%"
+              >
 
-              <thead>
-
-                <tr>
-                  <th>Player</th>
-                  <th>Bid</th>
-                </tr>
-
-              </thead>
-
-              <tbody>
-
-                ${t.players.map(player => `
+                <thead>
 
                   <tr>
 
-                    <td>
-                      ${player.name}
-                    </td>
+                    <th>
+                      Player
+                    </th>
 
-                    <td>
-                      ${fmt(player.amount)}
-                    </td>
+                    <th>
+                      Bid
+                    </th>
 
                   </tr>
 
-                `).join("")}
+                </thead>
 
-              </tbody>
+                <tbody>
 
-            </table>
+                  ${t.players.map(player => `
+
+                    <tr>
+
+                      <td>
+                        ${player.name}
+                      </td>
+
+                      <td>
+                        ${fmt(player.amount)}
+                      </td>
+
+                    </tr>
+
+                  `).join("")}
+
+                </tbody>
+
+              </table>
+
+            </div>
 
           </div>
+          `
+          :
+          `
+          <div
+            class="small"
+            style="margin-top:12px"
+          >
+            No players bought yet
+          </div>
+          `
+        }
 
-        </div>
-        `
-        :
-        `
-        <div
-          class="small"
-          style="margin-top:12px"
-        >
-          No players bought yet
-        </div>
-        `
-      }
+      </div>
 
-    </div>
-
-  `).join("");
+    `).join("");
 
 
   // -----------------------------------------------
@@ -647,7 +776,9 @@ function render(){
 
 
   $("currentNo").textContent =
-    `Player ${state.current + 1} of ${state.players.length} • ${p.status}`;
+    `Player ${state.current + 1}
+     of ${state.players.length}
+     • ${p.status}`;
 
 
   $("liveBid").textContent =
@@ -743,7 +874,9 @@ function render(){
 
         <td>
 
-          <span class="status ${p.status}">
+          <span
+            class="status ${p.status}"
+          >
             ${p.status}
           </span>
 
@@ -754,7 +887,10 @@ function render(){
         </td>
 
         <td>
-          ${p.amount ? fmt(p.amount) : "-"}
+          ${p.amount
+            ? fmt(p.amount)
+            : "-"
+          }
         </td>
 
       </tr>
@@ -773,7 +909,10 @@ function render(){
 
         <option
           value="${i}"
-          ${i === state.current ? "selected" : ""}
+          ${i === state.current
+            ? "selected"
+            : ""
+          }
         >
 
           ${i + 1}.
@@ -791,7 +930,10 @@ function render(){
 
         <option
           value="${i}"
-          ${i === Number(state.liveBidTeam) ? "selected" : ""}
+          ${i === Number(state.liveBidTeam)
+            ? "selected"
+            : ""
+          }
         >
 
           ${t.name}
@@ -811,18 +953,20 @@ function render(){
 
 
 // --------------------------------------------------
-// UPDATE LIVE BID
+// LIVE BID
 // --------------------------------------------------
 
 function bid(){
 
   if(!admin) return;
 
-  socket.emit("bid",{
+  socket.emit("bid", {
 
-    amount: $("amount").value,
+    amount:
+      $("amount").value,
 
-    team: $("selTeam").value
+    team:
+      $("selTeam").value
 
   });
 
@@ -837,11 +981,13 @@ function sold(){
 
   if(!admin) return;
 
-  socket.emit("sold",{
+  socket.emit("sold", {
 
-    amount: $("amount").value,
+    amount:
+      $("amount").value,
 
-    team: $("selTeam").value
+    team:
+      $("selTeam").value
 
   });
 
@@ -862,7 +1008,7 @@ function unsold(){
 
 
 // --------------------------------------------------
-// NEXT PLAYER
+// NEXT
 // --------------------------------------------------
 
 function next(){
@@ -875,7 +1021,7 @@ function next(){
 
 
 // --------------------------------------------------
-// PLAYER SELECT
+// PLAYER SELECTION
 // --------------------------------------------------
 
 $("selPlayer").onchange = () => {
@@ -891,20 +1037,22 @@ $("selPlayer").onchange = () => {
 
 
 // --------------------------------------------------
-// ENTER KEY FOR LOGIN
+// ENTER KEY
 // --------------------------------------------------
 
-$("pin").addEventListener("keydown", e => {
+$("pin").addEventListener(
+  "keydown",
+  e => {
 
-  if(e.key === "Enter"){
-
-    login();
+    if(e.key === "Enter"){
+      login();
+    }
 
   }
-
-});
+);
 
 </script>
 
 </body>
+
 </html>
