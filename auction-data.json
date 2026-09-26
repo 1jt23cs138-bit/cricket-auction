@@ -1,31 +1,31 @@
 {
   "teams": [
     {
-      "name": "Team A",
+      "name": "Team Chida",
       "budget": 20000,
       "spent": 0,
       "players": []
     },
     {
-      "name": "Team B",
+      "name": "Team Suraj",
       "budget": 20000,
       "spent": 0,
       "players": []
     },
     {
-      "name": "Team C",
+      "name": "Team Nithin",
       "budget": 20000,
       "spent": 0,
       "players": []
     },
     {
-      "name": "Team D",
+      "name": "Team Kshamay",
       "budget": 20000,
       "spent": 0,
       "players": []
     },
     {
-      "name": "Team E",
+      "name": "Team Siddu",
       "budget": 20000,
       "spent": 0,
       "players": []
