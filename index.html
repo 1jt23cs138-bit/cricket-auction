@@ -1,82 +1,910 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cricket Auction Live</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6fb;color:#172033}header{background:#18204a;color:#fff;padding:18px 16px}main{max-width:1100px;margin:auto;padding:14px}h1,h2{margin-top:0}.card{background:#fff;border:1px solid #dfe4ee;border-radius:15px;padding:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:140px}input,select,button{font:inherit;min-height:44px;border:1px solid #ccd3df;border-radius:9px;padding:9px;background:#fff}button{font-weight:700;cursor:pointer}.primary{background:#18204a;color:#fff}.value{font-size:25px;font-weight:800}.big{font-size:48px;font-weight:900}.small{font-size:12px;color:#697386}.notice{padding:10px;border-radius:10px;background:#fff8d9;border:1px solid #ead786}.live{background:#ffe9e9;border-color:#ffb7b7}.sold{background:#e8f8ec}.unsold{background:#fff0f0}.hidden{display:none!important}.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#eee;font-size:12px}.status.sold{background:#dff5e4}.status.unsold{background:#ffe1e1}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:9px;border-bottom:1px solid #e6e9ef;text-align:left;font-size:13px}th{background:#f0f2f7}.scroll{overflow:auto}.center{text-align:center}.choice{padding:30px}.choice button{min-height:65px;font-size:18px}.top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
-</style></head>
-<body><header><div class="top"><div><h1>🏏 Cricket Auction LIVE</h1><div>One link • Admin + Viewer</div></div><div id="mode">Viewer</div></div></header>
-<main>
-<section id="choice" class="card choice center"><h2>Choose how to enter</h2><div class="row"><button class="primary" onclick="showAdmin()">🔐 ADMIN</button><button onclick="showViewer()">👀 VIEW AUCTION</button></div></section>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<section id="login" class="card hidden"><h2>Admin Login</h2><input id="pin" type="password" inputmode="numeric" placeholder="Admin PIN"><button class="primary" onclick="login()">Enter</button><p id="loginMsg" class="small"></p></section>
+<title>Cricket Auction Live</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f4f6fb;
+  color:#172033
+}
+
+header{
+  background:#18204a;
+  color:#fff;
+  padding:18px 16px
+}
+
+main{
+  max-width:1100px;
+  margin:auto;
+  padding:14px
+}
+
+h1,h2{
+  margin-top:0
+}
+
+.card{
+  background:#fff;
+  border:1px solid #dfe4ee;
+  border-radius:15px;
+  padding:14px;
+  margin-bottom:12px
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:10px
+}
+
+.row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap
+}
+
+.row>*{
+  flex:1;
+  min-width:140px
+}
+
+input,select,button{
+  font:inherit;
+  min-height:44px;
+  border:1px solid #ccd3df;
+  border-radius:9px;
+  padding:9px;
+  background:#fff
+}
+
+button{
+  font-weight:700;
+  cursor:pointer
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed
+}
+
+.primary{
+  background:#18204a;
+  color:#fff
+}
+
+.value{
+  font-size:25px;
+  font-weight:800
+}
+
+.big{
+  font-size:48px;
+  font-weight:900
+}
+
+.small{
+  font-size:12px;
+  color:#697386
+}
+
+.notice{
+  padding:10px;
+  border-radius:10px;
+  background:#fff8d9;
+  border:1px solid #ead786
+}
+
+.live{
+  background:#ffe9e9;
+  border-color:#ffb7b7
+}
+
+.sold{
+  background:#e8f8ec
+}
+
+.unsold{
+  background:#fff0f0
+}
+
+.hidden{
+  display:none!important
+}
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  background:#eee;
+  font-size:12px
+}
+
+.status.sold{
+  background:#dff5e4
+}
+
+.status.unsold{
+  background:#ffe1e1
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:650px
+}
+
+th,td{
+  padding:9px;
+  border-bottom:1px solid #e6e9ef;
+  text-align:left;
+  font-size:13px
+}
+
+th{
+  background:#f0f2f7
+}
+
+.scroll{
+  overflow:auto
+}
+
+.center{
+  text-align:center
+}
+
+.choice{
+  padding:30px
+}
+
+.choice button{
+  min-height:65px;
+  font-size:18px
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="top">
+
+<div>
+<h1>🏏 Cricket Auction LIVE</h1>
+<div>One link • Admin + Viewer</div>
+</div>
+
+<div id="mode">Viewer</div>
+
+</div>
+
+</header>
+
+
+<main>
+
+<!-- ENTRY CHOICE -->
+
+<section id="choice" class="card choice center">
+
+<h2>Choose how to enter</h2>
+
+<div class="row">
+
+<button class="primary" onclick="showAdmin()">
+🔐 ADMIN
+</button>
+
+<button onclick="showViewer()">
+👀 VIEW AUCTION
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ADMIN LOGIN -->
+
+<section id="login" class="card hidden">
+
+<h2>Admin Login</h2>
+
+<input
+  id="pin"
+  type="password"
+  inputmode="numeric"
+  placeholder="Admin PIN"
+>
+
+<button class="primary" onclick="login()">
+Enter
+</button>
+
+<p id="loginMsg" class="small"></p>
+
+</section>
+
+
+<!-- ADMIN CONTROLS -->
 
 <section id="admin" class="hidden">
-<div class="card"><h2>Admin Control</h2><div class="grid"><label>Player<select id="selPlayer"></select></label><label>Bid Amount<input id="amount" type="number" min="200" value="200"></label><label>Team<select id="selTeam"></select></label></div><p id="err" class="notice hidden"></p><div class="row"><button class="primary" onclick="bid()">📢 UPDATE LIVE BID</button><button class="primary" onclick="sold()">🔨 SOLD</button><button onclick="unsold()">❌ UNSOLD</button><button onclick="next()">NEXT ▶</button></div></div>
+
+<div class="card">
+
+<h2>Admin Control</h2>
+
+<div class="grid">
+
+<label>
+Player
+
+<select id="selPlayer"></select>
+
+</label>
+
+
+<label>
+Bid Amount
+
+<input
+  id="amount"
+  type="number"
+  min="200"
+  value="200"
+>
+
+</label>
+
+
+<label>
+Team
+
+<select id="selTeam"></select>
+
+</label>
+
+</div>
+
+
+<p id="err" class="notice hidden"></p>
+
+
+<div class="row">
+
+<button
+  id="bidBtn"
+  class="primary"
+  onclick="bid()"
+>
+📢 UPDATE LIVE BID
+</button>
+
+
+<button
+  id="soldBtn"
+  class="primary"
+  onclick="sold()"
+>
+🔨 SOLD
+</button>
+
+
+<button
+  id="unsoldBtn"
+  onclick="unsold()"
+>
+❌ UNSOLD
+</button>
+
+
+<button
+  id="nextBtn"
+  onclick="next()"
+>
+NEXT ▶
+</button>
+
+</div>
+
+</div>
+
 </section>
+
+
+<!-- AUCTION -->
 
 <section id="auction" class="hidden">
+
+
+<!-- TEAMS -->
+
 <div id="teams" class="grid"></div>
-<div class="card center"><div class="small">CURRENT PLAYER</div><h2 id="currentPlayer"></h2><div id="currentNo" class="small"></div><div id="liveBid" class="big"></div><div id="liveTeam"></div><div id="result"></div></div>
-<div class="card"><h2>📋 Player Results</h2><div class="scroll"><table><thead><tr><th>#</th><th>Player</th><th>Status</th><th>Team</th><th>Amount</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+
+
+<!-- CURRENT PLAYER -->
+
+<div class="card center">
+
+<div class="small">
+CURRENT PLAYER
+</div>
+
+<h2 id="currentPlayer"></h2>
+
+<div id="currentNo" class="small"></div>
+
+<div id="liveBid" class="big"></div>
+
+<div id="liveTeam"></div>
+
+<div id="result"></div>
+
+</div>
+
+
+<!-- PLAYER RESULTS -->
+
+<div class="card">
+
+<h2>
+📋 Player Results
+</h2>
+
+<div class="scroll">
+
+<table>
+
+<thead>
+
+<tr>
+<th>#</th>
+<th>Player</th>
+<th>Status</th>
+<th>Team</th>
+<th>Amount</th>
+</tr>
+
+</thead>
+
+<tbody id="rows"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
 </section>
+
 </main>
-<script src="/socket.io/socket.io.js"></script><script>
-const socket=io();let state=null,admin=false,$=x=>document.getElementById(x),fmt=n=>Number(n||0).toLocaleString("en-IN");
-function showAdmin(){$("choice").classList.add("hidden");$("login").classList.remove("hidden");$("mode").textContent="Admin Login"}
-function showViewer(){$("choice").classList.add("hidden");$("auction").classList.remove("hidden");$("mode").textContent="👀 Viewer"}
-function login(){socket.emit("login",$("pin").value)}
-socket.on("login",ok=>{if(!ok){$("loginMsg").textContent="Wrong PIN";return}admin=true;$("login").classList.add("hidden");$("auction").classList.remove("hidden");$("admin").classList.remove("hidden");$("mode").textContent="🔐 ADMIN"})
-socket.on("errorMsg",m=>{$("err").textContent=m;$("err").classList.remove("hidden");setTimeout(()=>$("err").classList.add("hidden"),2500)})
-socket.on("update",s=>{state=s;render()});
-function render(){if(!state)return;const p=state.players[state.current];
-$("teams").innerHTML=state.teams.map(t=>`
-  <div class="card">
-    <h3>${t.name}</h3>
 
-    <div class="small">REMAINING</div>
-    <div class="value">${fmt(t.budget-t.spent)}</div>
 
-    <div class="small">
-      Spent ${fmt(t.spent)} • ${t.players.length} players
-    </div>
+<script src="/socket.io/socket.io.js"></script>
 
-    ${
-      t.players.length
-      ? `
+
+<script>
+
+const socket = io();
+
+let state = null;
+
+let admin = false;
+
+const $ = x => document.getElementById(x);
+
+const fmt = n =>
+  Number(n || 0).toLocaleString("en-IN");
+
+
+// --------------------------------------------------
+// ENTRY
+// --------------------------------------------------
+
+function showAdmin(){
+
+  $("choice").classList.add("hidden");
+
+  $("login").classList.remove("hidden");
+
+  $("mode").textContent = "🔐 Admin Login";
+
+  $("pin").focus();
+
+}
+
+
+function showViewer(){
+
+  $("choice").classList.add("hidden");
+
+  $("auction").classList.remove("hidden");
+
+  $("mode").textContent = "👀 Viewer";
+
+}
+
+
+// --------------------------------------------------
+// LOGIN
+// --------------------------------------------------
+
+function login(){
+
+  const pin = $("pin").value.trim();
+
+  if(!pin){
+
+    $("loginMsg").textContent =
+      "Please enter the Admin PIN.";
+
+    return;
+
+  }
+
+  $("loginMsg").textContent =
+    "Checking admin access...";
+
+  socket.emit("login", pin);
+
+}
+
+
+// IMPORTANT FIX:
+// Server sends an object like:
+// { ok:true }
+// or
+// { ok:false, message:"..." }
+
+socket.on("login", response => {
+
+  if(!response || response.ok !== true){
+
+    admin = false;
+
+    $("loginMsg").textContent =
+      response?.message || "Admin login failed.";
+
+    return;
+
+  }
+
+
+  // Login successful
+
+  admin = true;
+
+  $("login").classList.add("hidden");
+
+  $("auction").classList.remove("hidden");
+
+  $("admin").classList.remove("hidden");
+
+  $("mode").textContent = "🔐 ADMIN";
+
+  $("loginMsg").textContent = "";
+
+  render();
+
+});
+
+
+// --------------------------------------------------
+// SERVER ERROR
+// --------------------------------------------------
+
+socket.on("errorMsg", m => {
+
+  $("err").textContent = m;
+
+  $("err").classList.remove("hidden");
+
+  setTimeout(() => {
+
+    $("err").classList.add("hidden");
+
+  },2500);
+
+});
+
+
+// --------------------------------------------------
+// LIVE STATE UPDATE
+// --------------------------------------------------
+
+socket.on("update", s => {
+
+  state = s;
+
+  render();
+
+});
+
+
+// --------------------------------------------------
+// RENDER
+// --------------------------------------------------
+
+function render(){
+
+  if(!state) return;
+
+  const p = state.players[state.current];
+
+  if(!p) return;
+
+
+  // -----------------------------------------------
+  // TEAM CARDS
+  // -----------------------------------------------
+
+  $("teams").innerHTML = state.teams.map(t => `
+
+    <div class="card">
+
+      <h3>${t.name}</h3>
+
+      <div class="small">
+        REMAINING
+      </div>
+
+      <div class="value">
+        ${fmt(t.budget - t.spent)}
+      </div>
+
+      <div class="small">
+        Spent ${fmt(t.spent)}
+        • ${t.players.length} players
+      </div>
+
+      ${
+        t.players.length
+        ?
+        `
         <div style="margin-top:12px">
+
           <b>Players Bought</b>
+
           <div class="scroll">
+
             <table style="min-width:100%">
+
               <thead>
+
                 <tr>
                   <th>Player</th>
                   <th>Bid</th>
                 </tr>
+
               </thead>
+
               <tbody>
-                ${t.players.map(player=>`
+
+                ${t.players.map(player => `
+
                   <tr>
-                    <td>${player.name}</td>
-                    <td>${fmt(player.amount)}</td>
+
+                    <td>
+                      ${player.name}
+                    </td>
+
+                    <td>
+                      ${fmt(player.amount)}
+                    </td>
+
                   </tr>
+
                 `).join("")}
+
               </tbody>
+
             </table>
+
           </div>
+
         </div>
-      `
-      : `<div class="small" style="margin-top:12px">No players bought yet</div>`
-    }
-  </div>
-`).join("");$("currentPlayer").textContent=p.name;$("currentNo").textContent=`Player ${state.current+1} of ${state.players.length} • ${p.status}`;$("liveBid").textContent=fmt(state.liveBid||200);$("liveTeam").textContent=state.liveBidTeam!==""?"Current bid: "+state.teams[state.liveBidTeam].name:"Base price: 200";
-$("result").innerHTML=p.status==="sold"?`<div class="notice sold">🔨 SOLD — ${p.team} for ${fmt(p.amount)} points</div>`:p.status==="unsold"?`<div class="notice unsold">❌ UNSOLD</div>`:`<div class="notice live">🔴 BIDDING LIVE</div>`;
-$("rows").innerHTML=state.players.map((p,i)=>`<tr><td>${i+1}</td><td>${p.name}</td><td><span class="status ${p.status}">${p.status}</span></td><td>${p.team||"-"}</td><td>${p.amount?fmt(p.amount):"-"}</td></tr>`).join("");
-if(admin){$("selPlayer").innerHTML=state.players.map((p,i)=>`<option value="${i}" ${i===state.current?"selected":""}>${i+1}. ${p.name} — ${p.status}</option>`).join("");$("selTeam").innerHTML=state.teams.map((t,i)=>`<option value="${i}" ${i===Number(state.liveBidTeam)?"selected":""}>${t.name} (${fmt(t.budget-t.spent)} left)</option>`).join("");$("amount").value=state.liveBid||200}}
-function bid(){socket.emit("bid",{amount:$("amount").value,team:$("selTeam").value})}
-function sold(){
-  socket.emit("sold",{
-    amount:$("amount").value,
-    team:$("selTeam").value
+        `
+        :
+        `
+        <div
+          class="small"
+          style="margin-top:12px"
+        >
+          No players bought yet
+        </div>
+        `
+      }
+
+    </div>
+
+  `).join("");
+
+
+  // -----------------------------------------------
+  // CURRENT PLAYER
+  // -----------------------------------------------
+
+  $("currentPlayer").textContent =
+    p.name;
+
+
+  $("currentNo").textContent =
+    `Player ${state.current + 1} of ${state.players.length} • ${p.status}`;
+
+
+  $("liveBid").textContent =
+    fmt(state.liveBid || 200);
+
+
+  if(
+    state.liveBidTeam !== "" &&
+    state.liveBidTeam !== null &&
+    state.teams[state.liveBidTeam]
+  ){
+
+    $("liveTeam").textContent =
+      "Current bid: " +
+      state.teams[state.liveBidTeam].name;
+
+  }
+  else{
+
+    $("liveTeam").textContent =
+      "Base price: 200";
+
+  }
+
+
+  // -----------------------------------------------
+  // RESULT
+  // -----------------------------------------------
+
+  if(p.status === "sold"){
+
+    $("result").innerHTML = `
+
+      <div class="notice sold">
+
+        🔨 SOLD —
+        ${p.team}
+        for
+        ${fmt(p.amount)}
+        points
+
+      </div>
+
+    `;
+
+  }
+
+  else if(p.status === "unsold"){
+
+    $("result").innerHTML = `
+
+      <div class="notice unsold">
+
+        ❌ UNSOLD
+
+      </div>
+
+    `;
+
+  }
+
+  else{
+
+    $("result").innerHTML = `
+
+      <div class="notice live">
+
+        🔴 BIDDING LIVE
+
+      </div>
+
+    `;
+
+  }
+
+
+  // -----------------------------------------------
+  // PLAYER RESULTS
+  // -----------------------------------------------
+
+  $("rows").innerHTML =
+    state.players.map((p,i) => `
+
+      <tr>
+
+        <td>
+          ${i + 1}
+        </td>
+
+        <td>
+          ${p.name}
+        </td>
+
+        <td>
+
+          <span class="status ${p.status}">
+            ${p.status}
+          </span>
+
+        </td>
+
+        <td>
+          ${p.team || "-"}
+        </td>
+
+        <td>
+          ${p.amount ? fmt(p.amount) : "-"}
+        </td>
+
+      </tr>
+
+    `).join("");
+
+
+  // -----------------------------------------------
+  // ADMIN CONTROLS
+  // -----------------------------------------------
+
+  if(admin){
+
+    $("selPlayer").innerHTML =
+      state.players.map((p,i) => `
+
+        <option
+          value="${i}"
+          ${i === state.current ? "selected" : ""}
+        >
+
+          ${i + 1}.
+          ${p.name}
+          —
+          ${p.status}
+
+        </option>
+
+      `).join("");
+
+
+    $("selTeam").innerHTML =
+      state.teams.map((t,i) => `
+
+        <option
+          value="${i}"
+          ${i === Number(state.liveBidTeam) ? "selected" : ""}
+        >
+
+          ${t.name}
+          (${fmt(t.budget - t.spent)} left)
+
+        </option>
+
+      `).join("");
+
+
+    $("amount").value =
+      state.liveBid || 200;
+
+  }
+
+}
+
+
+// --------------------------------------------------
+// UPDATE LIVE BID
+// --------------------------------------------------
+
+function bid(){
+
+  if(!admin) return;
+
+  socket.emit("bid",{
+
+    amount: $("amount").value,
+
+    team: $("selTeam").value
+
   });
-}$("selPlayer").onchange=()=>socket.emit("select",Number($("selPlayer").value));
-</script></body></html>
+
+}
+
+
+// --------------------------------------------------
+// SOLD
+// --------------------------------------------------
+
+function sold(){
+
+  if(!admin) return;
+
+  socket.emit("sold",{
+
+    amount: $("amount").value,
+
+    team: $("selTeam").value
+
+  });
+
+}
+
+
+// --------------------------------------------------
+// UNSOLD
+// --------------------------------------------------
+
+function unsold(){
+
+  if(!admin) return;
+
+  socket.emit("unsold");
+
+}
+
+
+// --------------------------------------------------
+// NEXT PLAYER
+// --------------------------------------------------
+
+function next(){
+
+  if(!admin) return;
+
+  socket.emit("next");
+
+}
+
+
+// --------------------------------------------------
+// PLAYER SELECT
+// --------------------------------------------------
+
+$("selPlayer").onchange = () => {
+
+  if(!admin) return;
+
+  socket.emit(
+    "select",
+    Number($("selPlayer").value)
+  );
+
+};
+
+
+// --------------------------------------------------
+// ENTER KEY FOR LOGIN
+// --------------------------------------------------
+
+$("pin").addEventListener("keydown", e => {
+
+  if(e.key === "Enter"){
+
+    login();
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
