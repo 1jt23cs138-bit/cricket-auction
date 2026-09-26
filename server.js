@@ -1,3 +1,4 @@
+```javascript
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -110,7 +111,7 @@ io.on("connection", (s) => {
       String(data?.token || "");
 
 
-    // Existing Admin browser
+    // Restore existing admin session
     if (
       suppliedToken &&
       adminToken &&
@@ -140,7 +141,7 @@ io.on("connection", (s) => {
     }
 
 
-    // Someone else tries to login
+    // Another browser cannot become admin
     if (adminToken) {
 
       s.emit("login", {
@@ -171,7 +172,7 @@ io.on("connection", (s) => {
     }
 
 
-    // Create Admin session
+    // Create admin session
     adminToken =
       createAdminToken();
 
@@ -276,6 +277,7 @@ io.on("connection", (s) => {
     }
 
 
+    // Check budget
     if (
       amount >
       team.budget - team.spent
@@ -290,6 +292,7 @@ io.on("connection", (s) => {
     }
 
 
+    // Store current live bid
     state.liveBid =
       amount;
 
@@ -304,6 +307,7 @@ io.on("connection", (s) => {
       state
     );
 
+    // Bid animation
     io.emit(
       "bidAnimation"
     );
@@ -315,7 +319,7 @@ io.on("connection", (s) => {
   // SOLD
   // ==================================================
 
-  s.on("sold", (d) => {
+  s.on("sold", () => {
 
     if (!isAdmin(s)) return;
 
@@ -324,20 +328,18 @@ io.on("connection", (s) => {
       state.players[state.current];
 
 
+    // IMPORTANT:
+    // Use the currently selected/live team
     const teamIndex =
-      Number(
-        d?.team ??
-        state.liveBidTeam
-      );
+      Number(state.liveBidTeam);
 
 
+    // IMPORTANT:
+    // Use the current live bid
     const amount =
       Math.max(
         200,
-        Number(
-          d?.amount ??
-          state.liveBid
-        ) || 0
+        Number(state.liveBid) || 200
       );
 
 
@@ -345,6 +347,7 @@ io.on("connection", (s) => {
       state.teams[teamIndex];
 
 
+    // Check player
     if (
       !p ||
       p.status !== "pending"
@@ -355,16 +358,21 @@ io.on("connection", (s) => {
     }
 
 
-    if (!team) {
+    // Check selected team
+    if (
+      !Number.isInteger(teamIndex) ||
+      !team
+    ) {
 
       return s.emit(
         "errorMsg",
-        "Select a winning team first."
+        "Select a team and update the live bid first."
       );
 
     }
 
 
+    // Check team budget
     if (
       amount >
       team.budget - team.spent
@@ -372,33 +380,41 @@ io.on("connection", (s) => {
 
       return s.emit(
         "errorMsg",
-        "Team does not have enough points."
+        team.name +
+        " does not have enough points."
       );
 
     }
 
 
-    // Save history
+    // ==================================================
+    // SAVE SALE HISTORY
+    // ==================================================
+
     state.history.push({
 
-      type: "sale",
+      type:
+        "sale",
 
       playerIndex:
         state.current,
 
       teamIndex:
-
         teamIndex,
 
       amount:
-
         amount
 
     });
 
 
-    // Team
-    team.spent += amount;
+    // ==================================================
+    // UPDATE TEAM
+    // ==================================================
+
+    team.spent +=
+      amount;
+
 
     team.players.push({
 
@@ -411,7 +427,10 @@ io.on("connection", (s) => {
     });
 
 
-    // Player
+    // ==================================================
+    // UPDATE PLAYER
+    // ==================================================
+
     p.status =
       "sold";
 
@@ -422,6 +441,7 @@ io.on("connection", (s) => {
       amount;
 
 
+    // Keep final bid visible
     state.liveBid =
       amount;
 
@@ -431,11 +451,17 @@ io.on("connection", (s) => {
 
     save();
 
+
+    // Send updated state
     io.emit(
       "update",
       state
     );
 
+
+    // ==================================================
+    // SOLD ANIMATION
+    // ==================================================
 
     io.emit(
       "soldAnimation",
@@ -479,7 +505,6 @@ io.on("connection", (s) => {
     }
 
 
-    // Save unsold history
     state.history.push({
 
       type:
@@ -497,10 +522,12 @@ io.on("connection", (s) => {
 
     save();
 
+
     io.emit(
       "update",
       state
     );
+
 
     io.emit(
       "unsoldAnimation"
@@ -548,10 +575,12 @@ io.on("connection", (s) => {
 
       save();
 
+
       io.emit(
         "update",
         state
       );
+
 
       io.emit(
         "nextAnimation"
@@ -607,7 +636,10 @@ io.on("connection", (s) => {
         ];
 
 
-      if (!p || !team) {
+      if (
+        !p ||
+        !team
+      ) {
 
         return s.emit(
           "errorMsg",
@@ -621,7 +653,9 @@ io.on("connection", (s) => {
         last.amount;
 
 
-      if (team.spent < 0) {
+      if (
+        team.spent < 0
+      ) {
 
         team.spent = 0;
 
@@ -637,7 +671,9 @@ io.on("connection", (s) => {
         );
 
 
-      if (playerIndex !== -1) {
+      if (
+        playerIndex !== -1
+      ) {
 
         team.players.splice(
           playerIndex,
@@ -672,10 +708,12 @@ io.on("connection", (s) => {
 
       save();
 
+
       io.emit(
         "update",
         state
       );
+
 
       io.emit(
         "undoAnimation",
@@ -684,6 +722,7 @@ io.on("connection", (s) => {
             p.name
         }
       );
+
 
       return;
 
@@ -773,10 +812,12 @@ io.on("connection", (s) => {
 
       save();
 
+
       io.emit(
         "update",
         state
       );
+
 
       io.emit(
         "undoAnimation",
@@ -785,6 +826,7 @@ io.on("connection", (s) => {
             p.name
         }
       );
+
 
       return;
 
@@ -832,10 +874,12 @@ io.on("connection", (s) => {
 
       save();
 
+
       io.emit(
         "update",
         state
       );
+
 
       io.emit(
         "undoAnimation",
@@ -845,6 +889,7 @@ io.on("connection", (s) => {
         }
       );
 
+
       return;
 
     }
@@ -853,232 +898,6 @@ io.on("connection", (s) => {
     s.emit(
       "errorMsg",
       "This action cannot be undone."
-    );
-
-  });
-
-
-  // ==================================================
-  // EDIT SOLD PLAYER
-  // ==================================================
-
-  s.on("editSale", (d) => {
-
-    if (!isAdmin(s)) return;
-
-
-    const playerIndex =
-      Number(
-        d?.playerIndex
-      );
-
-
-    const newTeamIndex =
-      Number(
-        d?.teamIndex
-      );
-
-
-    const newAmount =
-      Math.max(
-        200,
-        Number(
-          d?.amount
-        ) || 0
-      );
-
-
-    const p =
-      state.players[
-        playerIndex
-      ];
-
-
-    const newTeam =
-      state.teams[
-        newTeamIndex
-      ];
-
-
-    if (!p || !newTeam) {
-
-      return s.emit(
-        "errorMsg",
-        "Invalid player or team."
-      );
-
-    }
-
-
-    if (
-      p.status !== "sold"
-    ) {
-
-      return s.emit(
-        "errorMsg",
-        "Only sold players can be edited."
-      );
-
-    }
-
-
-    const oldTeamIndex =
-      state.teams.findIndex(
-        t =>
-          t.name === p.team
-      );
-
-
-    if (
-      oldTeamIndex === -1
-    ) {
-
-      return s.emit(
-        "errorMsg",
-        "Original team not found."
-      );
-
-    }
-
-
-    const oldTeam =
-      state.teams[
-        oldTeamIndex
-      ];
-
-
-    const oldAmount =
-      Number(
-        p.amount
-      ) || 0;
-
-
-    // Check budget
-    if (
-      oldTeamIndex ===
-      newTeamIndex
-    ) {
-
-      const finalSpent =
-        oldTeam.spent -
-        oldAmount +
-        newAmount;
-
-
-      if (
-        finalSpent >
-        oldTeam.budget
-      ) {
-
-        return s.emit(
-          "errorMsg",
-          "Team does not have enough points."
-        );
-
-      }
-
-    }
-    else {
-
-      if (
-        newTeam.spent +
-        newAmount >
-        newTeam.budget
-      ) {
-
-        return s.emit(
-          "errorMsg",
-          newTeam.name +
-          " does not have enough points."
-        );
-
-      }
-
-    }
-
-
-    // Save edit history
-    state.history.push({
-
-      type:
-        "edit",
-
-      playerIndex:
-        playerIndex,
-
-      oldTeamIndex:
-        oldTeamIndex,
-
-      oldAmount:
-        oldAmount,
-
-      newTeamIndex:
-        newTeamIndex,
-
-      newAmount:
-        newAmount
-
-    });
-
-
-    // Remove old team amount
-    oldTeam.spent -=
-      oldAmount;
-
-
-    if (
-      oldTeam.spent < 0
-    ) {
-
-      oldTeam.spent = 0;
-
-    }
-
-
-    oldTeam.players =
-      oldTeam.players.filter(
-        x =>
-          x.name !== p.name
-      );
-
-
-    // Add new team
-    newTeam.spent +=
-      newAmount;
-
-
-    newTeam.players.push({
-
-      name:
-        p.name,
-
-      amount:
-        newAmount
-
-    });
-
-
-    // Update player
-    p.team =
-      newTeam.name;
-
-    p.amount =
-      newAmount;
-
-
-    save();
-
-    io.emit(
-      "update",
-      state
-    );
-
-    io.emit(
-      "editAnimation",
-      {
-        player:
-          p.name
-      }
     );
 
   });
@@ -1170,7 +989,7 @@ io.on("connection", (s) => {
       newName;
 
 
-    // Update player team names
+    // Update sold player team names
     state.players.forEach(
       player => {
 
@@ -1189,6 +1008,7 @@ io.on("connection", (s) => {
 
 
     save();
+
 
     io.emit(
       "update",
@@ -1242,3 +1062,4 @@ server.listen(
 
   }
 );
+```
