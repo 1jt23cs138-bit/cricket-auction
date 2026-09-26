@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cricket Auction Live</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6fb;color:#172033}header{background:#18204a;color:#fff;padding:18px 16px}main{max-width:1100px;margin:auto;padding:14px}h1,h2{margin-top:0}.card{background:#fff;border:1px solid #dfe4ee;border-radius:15px;padding:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:140px}input,select,button{font:inherit;min-height:44px;border:1px solid #ccd3df;border-radius:9px;padding:9px;background:#fff}button{font-weight:700;cursor:pointer}.primary{background:#18204a;color:#fff}.value{font-size:25px;font-weight:800}.big{font-size:48px;font-weight:900}.small{font-size:12px;color:#697386}.notice{padding:10px;border-radius:10px;background:#fff8d9;border:1px solid #ead786}.live{background:#ffe9e9;border-color:#ffb7b7}.sold{background:#e8f8ec}.unsold{background:#fff0f0}.hidden{display:none!important}.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#eee;font-size:12px}.status.sold{background:#dff5e4}.status.unsold{background:#ffe1e1}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:9px;border-bottom:1px solid #e6e9ef;text-align:left;font-size:13px}th{background:#f0f2f7}.scroll{overflow:auto}.center{text-align:center}.choice{padding:30px}.choice button{min-height:65px;font-size:18px}.top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+</style></head>
+<body><header><div class="top"><div><h1>🏏 Cricket Auction LIVE</h1><div>One link • Admin + Viewer</div></div><div id="mode">Viewer</div></div></header>
+<main>
+<section id="choice" class="card choice center"><h2>Choose how to enter</h2><div class="row"><button class="primary" onclick="showAdmin()">🔐 ADMIN</button><button onclick="showViewer()">👀 VIEW AUCTION</button></div></section>
+
+<section id="login" class="card hidden"><h2>Admin Login</h2><input id="pin" type="password" inputmode="numeric" placeholder="Admin PIN"><button class="primary" onclick="login()">Enter</button><p id="loginMsg" class="small"></p></section>
+
+<section id="admin" class="hidden">
+<div class="card"><h2>Admin Control</h2><div class="grid"><label>Player<select id="selPlayer"></select></label><label>Bid Amount<input id="amount" type="number" min="200" value="200"></label><label>Team<select id="selTeam"></select></label></div><p id="err" class="notice hidden"></p><div class="row"><button class="primary" onclick="bid()">📢 UPDATE LIVE BID</button><button class="primary" onclick="sold()">🔨 SOLD</button><button onclick="unsold()">❌ UNSOLD</button><button onclick="next()">NEXT ▶</button></div></div>
+</section>
+
+<section id="auction" class="hidden">
+<div id="teams" class="grid"></div>
+<div class="card center"><div class="small">CURRENT PLAYER</div><h2 id="currentPlayer"></h2><div id="currentNo" class="small"></div><div id="liveBid" class="big"></div><div id="liveTeam"></div><div id="result"></div></div>
+<div class="card"><h2>📋 Player Results</h2><div class="scroll"><table><thead><tr><th>#</th><th>Player</th><th>Status</th><th>Team</th><th>Amount</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+</section>
+</main>
+<script src="/socket.io/socket.io.js"></script><script>
+const socket=io();let state=null,admin=false,$=x=>document.getElementById(x),fmt=n=>Number(n||0).toLocaleString("en-IN");
+function showAdmin(){$("choice").classList.add("hidden");$("login").classList.remove("hidden");$("mode").textContent="Admin Login"}
+function showViewer(){$("choice").classList.add("hidden");$("auction").classList.remove("hidden");$("mode").textContent="👀 Viewer"}
+function login(){socket.emit("login",$("pin").value)}
+socket.on("login",ok=>{if(!ok){$("loginMsg").textContent="Wrong PIN";return}admin=true;$("login").classList.add("hidden");$("auction").classList.remove("hidden");$("admin").classList.remove("hidden");$("mode").textContent="🔐 ADMIN"})
+socket.on("errorMsg",m=>{$("err").textContent=m;$("err").classList.remove("hidden");setTimeout(()=>$("err").classList.add("hidden"),2500)})
+socket.on("update",s=>{state=s;render()});
+function render(){if(!state)return;const p=state.players[state.current];
+$("teams").innerHTML=state.teams.map(t=>`<div class="card"><b>${t.name}</b><div class="small">REMAINING</div><div class="value">${fmt(t.budget-t.spent)}</div><div class="small">Spent ${fmt(t.spent)} • ${t.players.length} players</div></div>`).join("");
+$("currentPlayer").textContent=p.name;$("currentNo").textContent=`Player ${state.current+1} of ${state.players.length} • ${p.status}`;$("liveBid").textContent=fmt(state.liveBid||200);$("liveTeam").textContent=state.liveBidTeam!==""?"Current bid: "+state.teams[state.liveBidTeam].name:"Base price: 200";
+$("result").innerHTML=p.status==="sold"?`<div class="notice sold">🔨 SOLD — ${p.team} for ${fmt(p.amount)} points</div>`:p.status==="unsold"?`<div class="notice unsold">❌ UNSOLD</div>`:`<div class="notice live">🔴 BIDDING LIVE</div>`;
+$("rows").innerHTML=state.players.map((p,i)=>`<tr><td>${i+1}</td><td>${p.name}</td><td><span class="status ${p.status}">${p.status}</span></td><td>${p.team||"-"}</td><td>${p.amount?fmt(p.amount):"-"}</td></tr>`).join("");
+if(admin){$("selPlayer").innerHTML=state.players.map((p,i)=>`<option value="${i}" ${i===state.current?"selected":""}>${i+1}. ${p.name} — ${p.status}</option>`).join("");$("selTeam").innerHTML=state.teams.map((t,i)=>`<option value="${i}" ${i===Number(state.liveBidTeam)?"selected":""}>${t.name} (${fmt(t.budget-t.spent)} left)</option>`).join("");$("amount").value=state.liveBid||200}}
+function bid(){socket.emit("bid",{amount:$("amount").value,team:$("selTeam").value})}
+function sold(){socket.emit("sold")}function unsold(){socket.emit("unsold")}function next(){socket.emit("next")}
+$("selPlayer").onchange=()=>socket.emit("select",Number($("selPlayer").value));
+</script></body></html>

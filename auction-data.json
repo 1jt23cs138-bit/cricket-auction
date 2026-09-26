@@ -1,0 +1,343 @@
+{
+  "teams": [
+    {
+      "name": "Team A",
+      "budget": 20000,
+      "spent": 0,
+      "players": []
+    },
+    {
+      "name": "Team B",
+      "budget": 20000,
+      "spent": 0,
+      "players": []
+    },
+    {
+      "name": "Team C",
+      "budget": 20000,
+      "spent": 0,
+      "players": []
+    },
+    {
+      "name": "Team D",
+      "budget": 20000,
+      "spent": 0,
+      "players": []
+    },
+    {
+      "name": "Team E",
+      "budget": 20000,
+      "spent": 0,
+      "players": []
+    }
+  ],
+  "players": [
+    {
+      "name": "Adarsh",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Preetham KP",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Abhinayakumar",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Abhishek Purad",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Mahanth",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Sriniketh C.H",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Rohan",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "CHIDANANDA G",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Daksh Sharma",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Mahesh S B",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Sindhoor P H",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Prayas upase",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Varun N Shetty",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Sujal",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "B Ajay",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "SUHAS HANAMAPPA M",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Dhanush",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Preetham HM",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Balmukund",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Veda Prakash Reddy O",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Vishwas",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Virupaksha kulkarni",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Achyuth",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Hithesh M O",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "MEGHARAJ R M",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Halesh N M",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "K Manoj",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Kshamaya P Bharadwaj",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Shrikara M",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Jashwanth P",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Jogi",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Yashwanthkumar",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Amogha Bhat",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Shyam",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Tarun kulkarni",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "B. Nithin",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Harsh Kumar",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Jeevan Bhat",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Dharanesh MN",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Krishna",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Chaluvaraj",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Akash c",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Manmith",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Vishnu",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Koushik ak",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Harsh Kumar",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Santanu Kumar Turga",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Srikrishna",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Shrikant",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Shashank gowda s",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    },
+    {
+      "name": "Player 51 - EDIT NAME",
+      "status": "pending",
+      "team": "",
+      "amount": 0
+    }
+  ],
+  "current": 0
+}

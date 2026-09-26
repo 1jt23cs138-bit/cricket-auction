@@ -1,0 +1,23 @@
+const express=require("express");
+const http=require("http");
+const {Server}=require("socket.io");
+const fs=require("fs");
+const path=require("path");
+const app=express(), server=http.createServer(app), io=new Server(server);
+const PORT=process.env.PORT||3000;
+const PIN=process.env.ADMIN_PIN||"2026";
+const DATA=path.join(__dirname,"auction-data.json");
+let state=JSON.parse(fs.readFileSync(DATA,"utf8"));
+const save=()=>fs.writeFileSync(DATA,JSON.stringify(state,null,2));
+app.use(express.static(__dirname));
+app.get("/",(req,res)=>res.sendFile(path.join(__dirname,"index.html")));
+io.on("connection",s=>{
+  s.emit("update",state);
+  s.on("login",pin=>{const ok=String(pin)===PIN;if(ok)s.data.admin=true;s.emit("login",ok)});
+  s.on("select",i=>{if(!s.data.admin)return;if(Number.isInteger(i)&&i>=0&&i<state.players.length){state.current=i;state.liveBid=200;state.liveBidTeam="";save();io.emit("update",state)}});
+  s.on("bid",d=>{if(!s.data.admin)return;const p=state.players[state.current],ti=Number(d.team),a=Math.max(200,Number(d.amount)||0),t=state.teams[ti];if(!p||p.status!=="pending"||!t)return;if(a>t.budget-t.spent)return s.emit("errorMsg",t.name+" does not have enough points.");state.liveBid=a;state.liveBidTeam=ti;save();io.emit("update",state)});
+  s.on("sold",()=>{if(!s.data.admin)return;const p=state.players[state.current],ti=Number(state.liveBidTeam),a=Math.max(200,Number(state.liveBid)||0),t=state.teams[ti];if(!p||p.status!=="pending")return;if(!t)return s.emit("errorMsg","Select a winning team first.");if(a>t.budget-t.spent)return s.emit("errorMsg","Team does not have enough points.");t.spent+=a;t.players.push({name:p.name,amount:a});p.status="sold";p.team=t.name;p.amount=a;save();io.emit("update",state)});
+  s.on("unsold",()=>{if(!s.data.admin)return;const p=state.players[state.current];if(!p||p.status!=="pending")return;p.status="unsold";save();io.emit("update",state)});
+  s.on("next",()=>{if(!s.data.admin)return;let n=state.current+1;while(n<state.players.length&&state.players[n].status!=="pending")n++;if(n<state.players.length){state.current=n;state.liveBid=200;state.liveBidTeam="";save();io.emit("update",state)}});
+});
+server.listen(PORT,()=>console.log("Cricket Auction running on port "+PORT));
