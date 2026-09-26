@@ -3,18 +3,19 @@ const http = require("http");
 const { Server } = require("socket.io");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
-
-// Keep your Render Environment Variable ADMIN_PIN.
-// If it is not set, the fallback password is 2026.
-const PIN = process.env.ADMIN_PIN || "2026";
-
+const PIN = process.env.ADMIN_PIN || "1176";
 const DATA = path.join(__dirname, "auction-data.json");
+
+// --------------------------------------------------
+// AUCTION DATA
+// --------------------------------------------------
 
 let state = JSON.parse(fs.readFileSync(DATA, "utf8"));
 
@@ -28,72 +29,132 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// ----------------------------------------------------
-// ADMIN CONNECTION CONTROL
-// ----------------------------------------------------
+// --------------------------------------------------
+// ADMIN SECURITY
+// --------------------------------------------------
 
-let activeAdmin = null;
+// Only ONE browser can ever be the Admin at a time.
+
+let adminToken = null;
+let adminSocketId = null;
+
+// Generate a secure random token
+function createAdminToken() {
+  return crypto.randomBytes(32).toString("hex");
+}
+
+// Check whether this socket is the authorized Admin
+function isAdmin(socket) {
+  return (
+    socket.data.admin === true &&
+    socket.data.adminToken &&
+    socket.data.adminToken === adminToken &&
+    socket.id === adminSocketId
+  );
+}
+
+// --------------------------------------------------
+// SOCKET CONNECTION
+// --------------------------------------------------
 
 io.on("connection", (s) => {
 
-  // Send current auction state to every newly connected user
+  // Send current auction state
   s.emit("update", state);
 
-  // --------------------------------------------------
-  // ADMIN LOGIN
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // ADMIN LOGIN / RECONNECT
+  // ------------------------------------------------
 
-  s.on("login", (pin) => {
+  s.on("login", (data) => {
 
-    const ok = String(pin) === PIN;
+    // New frontend sends an object
+    // { pin: "...", token: "..." }
 
-    // Wrong password
-    if (!ok) {
+    const pin = String(data?.pin || "");
+    const suppliedToken = String(data?.token || "");
+
+    // ----------------------------------------------
+    // CASE 1:
+    // Existing authorized Admin browser reconnecting
+    // ----------------------------------------------
+
+    if (
+      suppliedToken &&
+      adminToken &&
+      suppliedToken === adminToken
+    ) {
+
+      adminSocketId = s.id;
+      s.data.admin = true;
+      s.data.adminToken = adminToken;
+
+      s.emit("login", {
+        ok: true,
+        restored: true,
+        token: adminToken
+      });
+
+      console.log("Admin session restored:", s.id);
+
+      return;
+    }
+
+    // ----------------------------------------------
+    // CASE 2:
+    // Someone else tries to become Admin
+    // ----------------------------------------------
+
+    if (adminToken) {
+
+      s.emit("login", {
+        ok: false,
+        message:
+          "Admin is already locked to the authorized device."
+      });
+
+      return;
+    }
+
+    // ----------------------------------------------
+    // CASE 3:
+    // First Admin authorization
+    // ----------------------------------------------
+
+    if (pin !== PIN) {
+
       s.emit("login", {
         ok: false,
         message: "Wrong PIN"
       });
-      return;
-    }
-
-    // If this socket is already the active admin,
-    // allow it to continue.
-    if (activeAdmin === s.id) {
-      s.data.admin = true;
-
-      s.emit("login", {
-        ok: true
-      });
 
       return;
     }
 
-    // Prevent another admin from controlling the auction
-    if (activeAdmin && activeAdmin !== s.id) {
-      s.emit("login", {
-        ok: false,
-        message: "Another admin is already controlling the auction."
-      });
+    // Create permanent Admin token
+    adminToken = createAdminToken();
 
-      return;
-    }
+    adminSocketId = s.id;
 
-    // Make this socket the active admin
-    activeAdmin = s.id;
     s.data.admin = true;
+    s.data.adminToken = adminToken;
 
     s.emit("login", {
-      ok: true
+      ok: true,
+      restored: false,
+      token: adminToken
     });
+
+    console.log("New Admin authorized:", s.id);
   });
 
-  // --------------------------------------------------
+  // ------------------------------------------------
   // SELECT PLAYER
-  // --------------------------------------------------
+  // ------------------------------------------------
 
   s.on("select", (i) => {
 
-    if (!s.data.admin) return;
+    if (!isAdmin(s)) return;
 
     if (
       Number.isInteger(i) &&
@@ -111,39 +172,39 @@ io.on("connection", (s) => {
     }
   });
 
-  // --------------------------------------------------
-  // UPDATE LIVE BID
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // LIVE BID
+  // ------------------------------------------------
 
   s.on("bid", (d) => {
 
-    if (!s.data.admin) return;
+    if (!isAdmin(s)) return;
 
     const p = state.players[state.current];
 
-    const ti = Number(d.team);
+    const ti = Number(d?.team);
 
     const a = Math.max(
       200,
-      Number(d.amount) || 0
+      Number(d?.amount) || 0
     );
 
     const t = state.teams[ti];
 
-    // Invalid player/team
     if (!p || p.status !== "pending" || !t) {
       return;
     }
 
-    // Check team budget
     if (a > t.budget - t.spent) {
-      return s.emit(
+
+      s.emit(
         "errorMsg",
         t.name + " does not have enough points."
       );
+
+      return;
     }
 
-    // Update current live bid
     state.liveBid = a;
     state.liveBidTeam = ti;
 
@@ -152,13 +213,13 @@ io.on("connection", (s) => {
     io.emit("update", state);
   });
 
-  // --------------------------------------------------
-  // SELL PLAYER
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // SOLD
+  // ------------------------------------------------
 
   s.on("sold", (d) => {
 
-    if (!s.data.admin) return;
+    if (!isAdmin(s)) return;
 
     const p = state.players[state.current];
 
@@ -173,42 +234,41 @@ io.on("connection", (s) => {
 
     const t = state.teams[ti];
 
-    // Player does not exist or already sold/unsold
     if (!p || p.status !== "pending") {
       return;
     }
 
-    // No winning team selected
     if (!t) {
-      return s.emit(
+
+      s.emit(
         "errorMsg",
         "Select a winning team first."
       );
+
+      return;
     }
 
-    // Check budget again before final sale
     if (a > t.budget - t.spent) {
-      return s.emit(
+
+      s.emit(
         "errorMsg",
         "Team does not have enough points."
       );
+
+      return;
     }
 
-    // Deduct team points
     t.spent += a;
 
-    // Add player to team's squad
     t.players.push({
       name: p.name,
       amount: a
     });
 
-    // Update player information
     p.status = "sold";
     p.team = t.name;
     p.amount = a;
 
-    // Update current auction information
     state.liveBid = a;
     state.liveBidTeam = ti;
 
@@ -217,13 +277,13 @@ io.on("connection", (s) => {
     io.emit("update", state);
   });
 
-  // --------------------------------------------------
-  // UNSOLD PLAYER
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // UNSOLD
+  // ------------------------------------------------
 
   s.on("unsold", () => {
 
-    if (!s.data.admin) return;
+    if (!isAdmin(s)) return;
 
     const p = state.players[state.current];
 
@@ -238,17 +298,16 @@ io.on("connection", (s) => {
     io.emit("update", state);
   });
 
-  // --------------------------------------------------
+  // ------------------------------------------------
   // NEXT PLAYER
-  // --------------------------------------------------
+  // ------------------------------------------------
 
   s.on("next", () => {
 
-    if (!s.data.admin) return;
+    if (!isAdmin(s)) return;
 
     let n = state.current + 1;
 
-    // Skip players who are already sold/unsold
     while (
       n < state.players.length &&
       state.players[n].status !== "pending"
@@ -259,8 +318,6 @@ io.on("connection", (s) => {
     if (n < state.players.length) {
 
       state.current = n;
-
-      // Reset live bid
       state.liveBid = 200;
       state.liveBidTeam = "";
 
@@ -270,32 +327,39 @@ io.on("connection", (s) => {
     }
   });
 
-  // --------------------------------------------------
-  // IMPORTANT: ADMIN DISCONNECT FIX
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // DISCONNECT
+  // ------------------------------------------------
 
   s.on("disconnect", () => {
 
-    // Only release admin control if the
-    // disconnected socket was the active admin.
-    if (activeAdmin === s.id) {
+    // IMPORTANT:
+    // Do NOT delete adminToken here.
+    //
+    // This allows the same browser to refresh
+    // and reconnect as Admin.
 
-      activeAdmin = null;
+    if (adminSocketId === s.id) {
 
       console.log(
-        "Admin disconnected. Admin control released."
+        "Admin browser disconnected temporarily:",
+        s.id
       );
+
+      adminSocketId = null;
     }
   });
 
 });
 
-// ----------------------------------------------------
+// --------------------------------------------------
 // START SERVER
-// ----------------------------------------------------
+// --------------------------------------------------
 
 server.listen(PORT, () => {
+
   console.log(
     "Cricket Auction running on port " + PORT
   );
+
 });
