@@ -1,1428 +1,3362 @@
 <!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Cricket Auction LIVE</title>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+>
+
+<title>
+    Cricket Auction 2026
+</title>
+
 
 <style>
+
 *{
-  box-sizing:border-box;
+    box-sizing:border-box;
 }
+
 
 body{
-  margin:0;
-  font-family:Inter,Arial,sans-serif;
-  background:#080b10;
-  color:#f5f7fa;
+
+    margin:0;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+    background:
+        #080b10;
+
+    color:#f4f6f8;
+
 }
 
-/* HEADER */
-header{
-  background:linear-gradient(135deg,#111722,#171d29);
-  border-bottom:1px solid #2a303b;
-  padding:18px 25px;
-  position:sticky;
-  top:0;
-  z-index:20;
-}
-
-.top{
-  max-width:1400px;
-  margin:auto;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-}
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.logo-icon{
-  width:45px;
-  height:45px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#ff7a18,#ffb347);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:25px;
-}
-
-h1{
-  margin:0;
-  font-size:23px;
-}
-
-.subtitle{
-  color:#9299a6;
-  font-size:12px;
-  margin-top:3px;
-}
-
-.live-pill{
-  background:#351519;
-  color:#ff6868;
-  border:1px solid #703037;
-  padding:8px 14px;
-  border-radius:30px;
-  font-weight:bold;
-  font-size:13px;
-}
-
-/* MAIN */
-main{
-  max-width:1400px;
-  margin:auto;
-  padding:25px;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* ENTRY */
-.choice{
-  max-width:600px;
-  margin:100px auto;
-  text-align:center;
-  background:#11161f;
-  border:1px solid #292f39;
-  border-radius:20px;
-  padding:45px 30px;
-}
-
-.choice h2{
-  font-size:28px;
-}
-
-.row{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.row>*{
-  flex:1;
-  min-width:150px;
-}
 
 button,
 input,
 select{
-  font:inherit;
-  min-height:45px;
-  border-radius:10px;
-  border:1px solid #353c48;
-  padding:10px 13px;
+
+    font:inherit;
+
 }
+
 
 button{
-  cursor:pointer;
-  font-weight:700;
-  transition:.2s;
+
+    cursor:pointer;
+
 }
 
-button:hover{
-  transform:translateY(-1px);
+
+.hidden{
+
+    display:none !important;
+
 }
 
-.primary{
-  background:linear-gradient(135deg,#ff7a18,#ff9d3d);
-  color:#111;
-  border:none;
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    background:
+        rgba(10,14,20,.96);
+
+    backdrop-filter:
+        blur(12px);
+
+    border-bottom:
+        1px solid #252c36;
+
 }
 
-/* ADMIN */
-.admin-panel{
-  background:#11161f;
-  border:1px solid #292f39;
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:20px;
+
+.header-inner{
+
+    max-width:1500px;
+
+    margin:auto;
+
+    padding:
+        15px 22px;
+
+    display:flex;
+
+    justify-content:
+        space-between;
+
+    align-items:center;
+
+    gap:15px;
+
 }
 
-.admin-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
 }
 
-.admin-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:12px;
+
+.logo{
+
+    width:48px;
+
+    height:48px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border-radius:13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff7018,
+            #ffb34d
+        );
+
+    font-size:26px;
+
 }
 
-label{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  color:#9ca4b1;
-  font-size:12px;
+
+.brand h1{
+
+    margin:0;
+
+    font-size:22px;
+
 }
+
+
+.brand small{
+
+    color:#7e8794;
+
+}
+
+
+.header-actions{
+
+    display:flex;
+
+    gap:8px;
+
+    align-items:center;
+
+}
+
+
+.mode{
+
+    padding:
+        8px 13px;
+
+    border-radius:30px;
+
+    background:#31171a;
+
+    color:#ff7777;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.btn{
+
+    border:1px solid #343c48;
+
+    background:#151b24;
+
+    color:white;
+
+    padding:
+        10px 14px;
+
+    border-radius:10px;
+
+    font-weight:700;
+
+}
+
+
+.btn:hover{
+
+    filter:brightness(1.15);
+
+}
+
+
+.btn-primary{
+
+    border:none;
+
+    color:#111;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff761b,
+            #ffb14d
+        );
+
+}
+
+
+.btn-green{
+
+    background:#103820;
+
+    border-color:#236a3e;
+
+    color:#6bea9a;
+
+}
+
+
+.btn-red{
+
+    background:#351619;
+
+    border-color:#713238;
+
+    color:#ff7d7d;
+
+}
+
+
+.btn-blue{
+
+    background:#142c46;
+
+    border-color:#28537a;
+
+    color:#7fc5ff;
+
+}
+
+
+.btn-small{
+
+    padding:
+        6px 9px;
+
+    font-size:11px;
+
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+main{
+
+    max-width:1500px;
+
+    margin:auto;
+
+    padding:22px;
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+.login{
+
+    max-width:430px;
+
+    margin:
+        100px auto;
+
+    background:#111720;
+
+    border:
+        1px solid #29313c;
+
+    border-radius:20px;
+
+    padding:30px;
+
+}
+
+
+.login h2{
+
+    margin-top:0;
+
+}
+
 
 input,
 select{
-  background:#0b0f15;
-  color:white;
+
+    width:100%;
+
+    min-height:44px;
+
+    padding:
+        9px 12px;
+
+    border:
+        1px solid #343c47;
+
+    border-radius:9px;
+
+    background:#0b1016;
+
+    color:white;
+
 }
 
-.notice{
-  padding:11px;
-  border-radius:10px;
-  margin:12px 0;
-  background:#251d0b;
-  border:1px solid #675321;
-  color:#ffd978;
+
+label{
+
+    color:#8c96a3;
+
+    font-size:11px;
+
+    display:block;
+
+    margin-bottom:6px;
+
 }
 
-.sold-notice{
-  background:#0d281a;
-  border-color:#1d7040;
-  color:#67e69a;
-}
 
-.unsold-notice{
-  background:#291316;
-  border-color:#71343a;
-  color:#ff8585;
-}
+/* =====================================================
+   STATS
+===================================================== */
 
-/* STATS */
 .stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-bottom:20px;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:12px;
+
+    margin-bottom:18px;
+
 }
+
 
 .stat{
-  background:#11161f;
-  border:1px solid #292f39;
-  border-radius:15px;
-  padding:18px;
+
+    background:#111720;
+
+    border:
+        1px solid #29313c;
+
+    border-radius:15px;
+
+    padding:17px;
+
 }
 
-.stat-label{
-  color:#858e9c;
-  font-size:12px;
+
+.stat-title{
+
+    color:#7f8997;
+
+    font-size:11px;
+
 }
+
 
 .stat-value{
-  font-size:25px;
-  font-weight:900;
-  margin-top:7px;
+
+    font-size:25px;
+
+    font-weight:900;
+
+    margin-top:5px;
+
 }
 
-/* AUCTION LAYOUT */
+
+/* =====================================================
+   CURRENT PLAYER
+===================================================== */
+
 .auction-layout{
-  display:grid;
-  grid-template-columns:1fr 320px;
-  gap:20px;
+
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1fr)
+        340px;
+
+    gap:18px;
+
 }
 
-/* CURRENT PLAYER */
-.player-card{
-  background:
-    radial-gradient(circle at 50% 20%,#292d35 0,#151a22 35%,#0e1218 80%);
-  border:1px solid #343b46;
-  border-radius:22px;
-  min-height:480px;
-  padding:35px;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
+
+.current-player{
+
+    min-height:420px;
+
+    border:
+        1px solid #353d48;
+
+    border-radius:22px;
+
+    padding:30px;
+
+    text-align:center;
+
+    background:
+
+        radial-gradient(
+            circle at 50% 10%,
+            #2a3039,
+            #161b23 40%,
+            #0d1117 80%
+        );
+
 }
 
-.live-tag{
-  display:inline-block;
-  background:#4a161b;
-  border:1px solid #803239;
-  color:#ff7070;
-  padding:7px 14px;
-  border-radius:30px;
-  font-size:12px;
-  font-weight:bold;
+
+.live{
+
+    display:inline-block;
+
+    padding:
+        7px 13px;
+
+    border-radius:30px;
+
+    background:#45171c;
+
+    border:
+        1px solid #7b343b;
+
+    color:#ff7777;
+
+    font-weight:bold;
+
+    font-size:11px;
+
 }
+
 
 .current-label{
-  color:#777f8c;
-  font-size:12px;
-  margin-top:22px;
+
+    margin-top:24px;
+
+    color:#7d8793;
+
+    font-size:11px;
+
 }
+
 
 .player-name{
-  font-size:45px;
-  font-weight:900;
-  margin:10px 0;
+
+    font-size:
+        clamp(32px,5vw,58px);
+
+    font-weight:900;
+
+    margin:
+        8px 0;
+
 }
 
-.player-number{
-  color:#777f8c;
-  font-size:13px;
+
+.player-status{
+
+    color:#858f9c;
+
+    font-size:12px;
+
 }
 
-.bid-label{
-  color:#929aa6;
-  margin-top:28px;
-  font-size:12px;
-}
 
 .bid{
-  font-size:62px;
-  font-weight:900;
-  color:#ff9d3d;
-  margin:3px 0;
+
+    font-size:
+        clamp(42px,6vw,70px);
+
+    font-weight:900;
+
+    color:#ff9d3d;
+
+    margin-top:25px;
+
 }
+
 
 .bid-team{
-  font-size:16px;
-  color:#dce0e6;
+
+    color:#cbd0d7;
+
 }
 
-.result{
-  margin-top:25px;
+
+.auction-buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:24px;
+
 }
 
-/* TEAM CARDS */
-.teams-title{
-  margin:25px 0 12px;
-  font-size:18px;
+
+/* =====================================================
+   ADMIN PANEL
+===================================================== */
+
+.admin-panel{
+
+    background:#111720;
+
+    border:
+        1px solid #29313c;
+
+    border-radius:17px;
+
+    padding:18px;
+
+    margin-bottom:18px;
+
 }
+
+
+.admin-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1fr;
+
+    gap:10px;
+
+}
+
+
+.admin-actions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:13px;
+
+}
+
+
+/* =====================================================
+   TEAMS
+===================================================== */
+
+.section-title{
+
+    margin:
+        25px 0 12px;
+
+    font-size:20px;
+
+}
+
 
 .team-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:12px;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(280px,1fr)
+        );
+
+    gap:14px;
+
 }
+
 
 .team-card{
-  background:#11161f;
-  border:1px solid #292f39;
-  border-radius:15px;
-  padding:16px;
-  transition:.2s;
+
+    background:#111720;
+
+    border:
+        1px solid #29313c;
+
+    border-radius:17px;
+
+    padding:18px;
+
 }
 
-.team-card:hover{
-  border-color:#ff8b2b;
+
+.team-head{
+
+    display:flex;
+
+    justify-content:
+        space-between;
+
+    align-items:center;
+
 }
 
-.team-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
 
 .team-name{
-  font-weight:900;
-  font-size:17px;
+
+    font-size:19px;
+
+    font-weight:900;
+
 }
 
-.team-count{
-  background:#252b35;
-  color:#aeb5c0;
-  padding:4px 8px;
-  border-radius:20px;
-  font-size:11px;
+
+.player-count{
+
+    padding:
+        5px 9px;
+
+    background:#252c36;
+
+    border-radius:20px;
+
+    font-size:10px;
+
+    color:#aeb6c1;
+
 }
 
-.money{
-  font-size:24px;
-  font-weight:900;
-  color:#ffad5c;
-  margin-top:10px;
+
+.remaining{
+
+    color:#ffad5c;
+
+    font-size:27px;
+
+    font-weight:900;
+
+    margin-top:12px;
+
 }
 
-.money-label{
-  color:#747d8a;
-  font-size:11px;
+
+.remaining-label{
+
+    color:#737d89;
+
+    font-size:10px;
+
 }
+
 
 .progress{
-  height:6px;
-  background:#252b34;
-  border-radius:10px;
-  margin:10px 0;
-  overflow:hidden;
+
+    height:6px;
+
+    background:#252c34;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin:
+        10px 0;
+
 }
 
-.progress-bar{
-  height:100%;
-  background:linear-gradient(90deg,#ff7018,#ffc05c);
+
+.progress div{
+
+    height:100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff7018,
+            #ffc15f
+        );
+
 }
 
-.team-spent{
-  color:#777f8c;
-  font-size:11px;
+
+.team-summary{
+
+    color:#7f8996;
+
+    font-size:11px;
+
 }
 
-/* PLAYER LIST INSIDE TEAM */
-.team-players{
-  margin-top:14px;
-  border-top:1px solid #292f39;
-  padding-top:10px;
+
+.squad{
+
+    margin-top:15px;
+
+    border-top:
+        1px solid #292f38;
+
 }
 
-.team-player{
-  display:flex;
-  justify-content:space-between;
-  padding:7px 0;
-  font-size:12px;
-  border-bottom:1px solid #1f252e;
+
+.squad-player{
+
+    display:flex;
+
+    justify-content:
+        space-between;
+
+    align-items:center;
+
+    padding:
+        9px 0;
+
+    border-bottom:
+        1px solid #202630;
+
+    font-size:13px;
+
 }
 
-.team-player:last-child{
-  border-bottom:none;
+
+.squad-price{
+
+    color:#ffad5c;
+
+    font-weight:bold;
+
 }
 
-.player-price{
-  color:#ffab5c;
-  font-weight:bold;
-}
 
 .empty{
-  color:#626b78;
-  font-size:12px;
-  padding:5px 0;
+
+    color:#69727f;
+
+    font-size:12px;
+
+    padding:
+        12px 0;
+
 }
 
-/* SIDE PANEL */
-.side{
-  display:flex;
-  flex-direction:column;
-  gap:15px;
+
+.team-download{
+
+    margin-top:13px;
+
+    width:100%;
+
 }
+
+
+/* =====================================================
+   SIDE PANEL
+===================================================== */
 
 .side-card{
-  background:#11161f;
-  border:1px solid #292f39;
-  border-radius:16px;
-  padding:18px;
+
+    background:#111720;
+
+    border:
+        1px solid #29313c;
+
+    border-radius:17px;
+
+    padding:18px;
+
+    margin-bottom:14px;
+
 }
+
 
 .side-title{
-  font-weight:900;
-  margin-bottom:14px;
+
+    font-weight:900;
+
+    margin-bottom:12px;
+
 }
+
 
 .activity{
-  max-height:350px;
-  overflow:auto;
+
+    max-height:350px;
+
+    overflow:auto;
+
 }
+
 
 .activity-item{
-  padding:10px 0;
-  border-bottom:1px solid #252b34;
-  font-size:12px;
+
+    padding:
+        9px 0;
+
+    border-bottom:
+        1px solid #252c35;
+
+    font-size:12px;
+
 }
+
 
 .activity-item strong{
-  color:#ffad5c;
+
+    color:#ffad5c;
+
 }
 
-.time{
-  color:#656e7b;
-  font-size:10px;
-  margin-top:3px;
+
+/* =====================================================
+   PLAYER MANAGEMENT
+===================================================== */
+
+.management{
+
+    margin-top:20px;
+
+    background:#111720;
+
+    border:
+        1px solid #29313c;
+
+    border-radius:17px;
+
+    padding:18px;
+
 }
 
-/* TABLE */
-.table-card{
-  margin-top:20px;
-  background:#11161f;
-  border:1px solid #292f39;
-  border-radius:16px;
-  padding:18px;
+
+.add-player{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-bottom:15px;
+
 }
 
-.scroll{
-  overflow:auto;
+
+.add-player input{
+
+    flex:1;
+
 }
+
+
+.player-table{
+
+    overflow:auto;
+
+}
+
 
 table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:750px;
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:800px;
+
 }
+
 
 th,
 td{
-  padding:12px;
-  border-bottom:1px solid #252b34;
-  text-align:left;
-  font-size:13px;
+
+    text-align:left;
+
+    padding:11px;
+
+    border-bottom:
+        1px solid #252c35;
+
+    font-size:12px;
+
 }
+
 
 th{
-  color:#8c95a2;
-  font-size:11px;
-  text-transform:uppercase;
+
+    color:#808a97;
+
+    font-size:10px;
+
+    text-transform:uppercase;
+
 }
+
 
 .status{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:10px;
-  font-weight:bold;
+
+    padding:
+        5px 8px;
+
+    border-radius:20px;
+
+    font-size:9px;
+
+    font-weight:bold;
+
 }
+
 
 .status.sold{
-  background:#123821;
-  color:#65e49a;
+
+    color:#6bea9a;
+
+    background:#123720;
+
 }
+
 
 .status.pending{
-  background:#3a3017;
-  color:#ffd36c;
+
+    color:#ffd66e;
+
+    background:#3a3017;
+
 }
+
 
 .status.unsold{
-  background:#3b181b;
-  color:#ff7777;
+
+    color:#ff7d7d;
+
+    background:#3a181b;
+
 }
 
-/* LOGIN */
-.login-card{
-  max-width:400px;
-  margin:100px auto;
-  background:#11161f;
-  border:1px solid #292f39;
-  border-radius:18px;
-  padding:25px;
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:500;
+
+    background:
+        rgba(0,0,0,.75);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
+
 }
 
-.login-card input{
-  width:100%;
-  margin-bottom:10px;
+
+.modal-box{
+
+    width:
+        min(500px,100%);
+
+    background:#111720;
+
+    border:
+        1px solid #303946;
+
+    border-radius:18px;
+
+    padding:23px;
+
 }
 
-/* MOBILE */
-@media(max-width:900px){
-  .auction-layout{
-    grid-template-columns:1fr;
-  }
 
-  .admin-grid{
-    grid-template-columns:1fr;
-  }
+.modal-box h3{
 
-  .stats{
-    grid-template-columns:repeat(2,1fr);
-  }
+    margin-top:0;
+
 }
+
+
+.modal-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:8px;
+
+    margin-top:18px;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:950px){
+
+    .auction-layout{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .stats{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+    .admin-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
 
 @media(max-width:600px){
-  main{
-    padding:12px;
-  }
 
-  header{
-    padding:14px;
-  }
+    main{
 
-  .player-name{
-    font-size:32px;
-  }
+        padding:12px;
 
-  .bid{
-    font-size:45px;
-  }
+    }
 
-  .player-card{
-    padding:25px 15px;
-  }
+    .header-inner{
 
-  .stats{
-    grid-template-columns:1fr 1fr;
-  }
+        padding:
+            12px;
+
+    }
+
+    .brand h1{
+
+        font-size:17px;
+
+    }
+
+    .header-actions{
+
+        flex-wrap:wrap;
+
+        justify-content:flex-end;
+
+    }
+
+    .stats{
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+    .current-player{
+
+        padding:22px 12px;
+
+    }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <header>
-  <div class="top">
 
-    <div class="logo">
-      <div class="logo-icon">🏏</div>
+<div class="header-inner">
 
-      <div>
-        <h1>CRICKET AUCTION</h1>
-        <div class="subtitle">
-          Live Player Auction • Real-Time Bidding
+    <div class="brand">
+
+        <div class="logo">
+            🏏
         </div>
-      </div>
+
+        <div>
+
+            <h1>
+                CRICKET AUCTION
+            </h1>
+
+            <small>
+                Live Player Auction 2026
+            </small>
+
+        </div>
+
     </div>
 
-    <div class="live-pill" id="mode">
-      🔴 LIVE
+
+    <div class="header-actions">
+
+        <span
+            id="modeBadge"
+            class="mode"
+        >
+            VIEWER
+        </span>
+
+
+        <button
+            class="btn"
+            onclick="openAdminLogin()"
+        >
+            🔐 Admin
+        </button>
+
+
+        <button
+            class="btn btn-primary"
+            onclick="downloadExcel()"
+        >
+            📥 Download Excel
+        </button>
+
     </div>
 
-  </div>
+</div>
+
 </header>
+
 
 <main>
 
-<!-- ENTRY -->
-<section id="choice" class="choice">
 
-  <h2>🏆 Cricket Auction 2026</h2>
+<!-- =====================================================
+     LOGIN
+===================================================== -->
 
-  <p style="color:#8d96a4">
-    Welcome to the live cricket player auction
-  </p>
+<section
+    id="loginSection"
+    class="login hidden"
+>
 
-  <div class="row" style="margin-top:25px">
+    <h2>
+        🔐 Admin Login
+    </h2>
 
-    <button class="primary" onclick="showAdmin()">
-      🔐 ADMIN
+    <p style="color:#808a97">
+
+        Enter the auction admin PIN.
+
+    </p>
+
+
+    <input
+        id="pinInput"
+        type="password"
+        placeholder="Admin PIN"
+        onkeydown="
+            if(event.key==='Enter')
+            login()
+        "
+    >
+
+
+    <button
+        class="btn btn-primary"
+        style="
+            width:100%;
+            margin-top:10px;
+        "
+        onclick="login()"
+    >
+        ENTER ADMIN
     </button>
 
-    <button onclick="showViewer()">
-      👀 VIEW AUCTION
-    </button>
 
-  </div>
+    <p
+        id="loginError"
+        style="color:#ff7777"
+    ></p>
 
 </section>
 
 
-<!-- LOGIN -->
-<section id="login" class="login-card hidden">
+<!-- =====================================================
+     APPLICATION
+===================================================== -->
 
-  <h2>🔐 Admin Login</h2>
-
-  <p class="subtitle">
-    Enter the auction administrator PIN
-  </p>
-
-  <input
-    id="pin"
-    type="password"
-    inputmode="numeric"
-    placeholder="Admin PIN"
-  >
-
-  <button
-    class="primary"
-    style="width:100%"
-    onclick="login()"
-  >
-    ENTER AUCTION
-  </button>
-
-  <p id="loginMsg" class="subtitle"></p>
-
-</section>
+<section
+    id="appSection"
+>
 
 
-<!-- ADMIN -->
-<section id="admin" class="hidden">
+<!-- =====================================================
+     STATS
+===================================================== -->
 
-  <div class="admin-panel">
+<div class="stats">
 
-    <div class="admin-title">
-      <h2>⚙️ Auction Control</h2>
-      <span class="live-pill">ADMIN</span>
+    <div class="stat">
+
+        <div class="stat-title">
+            TOTAL PLAYERS
+        </div>
+
+        <div
+            id="totalPlayers"
+            class="stat-value"
+        >
+            0
+        </div>
+
     </div>
+
+
+    <div class="stat">
+
+        <div class="stat-title">
+            SOLD
+        </div>
+
+        <div
+            id="soldPlayers"
+            class="stat-value"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-title">
+            AVAILABLE
+        </div>
+
+        <div
+            id="availablePlayers"
+            class="stat-value"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-title">
+            UNSOLD
+        </div>
+
+        <div
+            id="unsoldPlayers"
+            class="stat-value"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-title">
+            HIGHEST SALE
+        </div>
+
+        <div
+            id="highestBid"
+            class="stat-value"
+        >
+            0
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ADMIN CONTROLS
+===================================================== -->
+
+<section
+    id="adminPanel"
+    class="admin-panel hidden"
+>
+
+    <h3>
+        ⚙️ Auction Controls
+    </h3>
+
 
     <div class="admin-grid">
 
-      <label>
-        CURRENT PLAYER
-        <select id="selPlayer"></select>
-      </label>
 
-      <label>
-        BID AMOUNT
-        <input
-          id="amount"
-          type="number"
-          min="200"
-          value="200"
+        <div>
+
+            <label>
+                CURRENT PLAYER
+            </label>
+
+            <select
+                id="playerSelect"
+                onchange="selectPlayer()"
+            ></select>
+
+        </div>
+
+
+        <div>
+
+            <label>
+                BID AMOUNT
+            </label>
+
+            <input
+                id="bidAmount"
+                type="number"
+                min="200"
+                value="200"
+            >
+
+        </div>
+
+
+        <div>
+
+            <label>
+                BIDDING TEAM
+            </label>
+
+            <select
+                id="teamSelect"
+            ></select>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="admin-actions">
+
+        <button
+            class="btn btn-primary"
+            onclick="placeBid()"
         >
-      </label>
+            📢 UPDATE BID
+        </button>
 
-      <label>
-        BIDDING TEAM
-        <select id="selTeam"></select>
-      </label>
+
+        <button
+            class="btn btn-green"
+            onclick="sellPlayer()"
+        >
+            🔨 SOLD
+        </button>
+
+
+        <button
+            class="btn btn-red"
+            onclick="markUnsold()"
+        >
+            ❌ UNSOLD
+        </button>
+
+
+        <button
+            class="btn"
+            onclick="nextPlayer()"
+        >
+            NEXT ▶
+        </button>
+
+
+        <button
+            class="btn btn-blue"
+            onclick="undoSale()"
+        >
+            ↩️ UNDO LAST SALE
+        </button>
+
+
+        <button
+            class="btn btn-red"
+            onclick="openResetModal()"
+        >
+            🔄 RESET AUCTION
+        </button>
 
     </div>
-
-    <p id="err" class="notice hidden"></p>
-
-    <div class="row" style="margin-top:15px">
-
-      <button
-        class="primary"
-        onclick="bid()"
-      >
-        📢 UPDATE BID
-      </button>
-
-      <button
-        class="primary"
-        onclick="sold()"
-      >
-        🔨 SOLD
-      </button>
-
-      <button onclick="unsold()">
-        ❌ UNSOLD
-      </button>
-
-      <button onclick="next()">
-        NEXT ▶
-      </button>
-
-    </div>
-
-  </div>
 
 </section>
 
 
-<!-- AUCTION -->
-<section id="auction" class="hidden">
+<!-- =====================================================
+     AUCTION AREA
+===================================================== -->
 
-  <!-- STATS -->
-  <div class="stats">
-
-    <div class="stat">
-      <div class="stat-label">TOTAL PLAYERS</div>
-      <div class="stat-value" id="totalPlayers">0</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-label">SOLD PLAYERS</div>
-      <div class="stat-value" id="soldPlayers">0</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-label">AVAILABLE</div>
-      <div class="stat-value" id="availablePlayers">0</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-label">HIGHEST BID</div>
-      <div class="stat-value" id="highestBid">0</div>
-    </div>
-
-  </div>
+<div class="auction-layout">
 
 
-  <div class="auction-layout">
-
-    <!-- LEFT -->
-    <div>
-
-      <!-- CURRENT PLAYER -->
-      <div class="player-card">
-
-        <div class="live-tag">
-          🔴 LIVE AUCTION
-        </div>
-
-        <div class="current-label">
-          CURRENT PLAYER
-        </div>
-
-        <div
-          id="currentPlayer"
-          class="player-name"
-        >
-          -
-        </div>
-
-        <div
-          id="currentNo"
-          class="player-number"
-        >
-          -
-        </div>
-
-        <div class="bid-label">
-          CURRENT BID
-        </div>
-
-        <div
-          id="liveBid"
-          class="bid"
-        >
-          0
-        </div>
-
-        <div
-          id="liveTeam"
-          class="bid-team"
-        >
-          Base Price
-        </div>
-
-        <div
-          id="result"
-          class="result"
-        >
-        </div>
-
-      </div>
+<div>
 
 
-      <!-- TEAMS -->
-      <h2 class="teams-title">
-        👥 Teams & Squads
-      </h2>
+<div class="current-player">
 
-      <div
-        id="teams"
-        class="team-grid"
-      ></div>
+    <span class="live">
+        🔴 LIVE AUCTION
+    </span>
 
+
+    <div class="current-label">
+        CURRENT PLAYER
     </div>
 
 
-    <!-- RIGHT -->
-    <div class="side">
+    <div
+        id="currentPlayer"
+        class="player-name"
+    >
+        -
+    </div>
 
-      <!-- AUCTION ACTIVITY -->
-      <div class="side-card">
 
-        <div class="side-title">
-          📢 Live Activity
-        </div>
+    <div
+        id="currentStatus"
+        class="player-status"
+    >
+        -
+    </div>
 
-        <div
-          id="activity"
-          class="activity"
+
+    <div
+        id="currentBid"
+        class="bid"
+    >
+        ₹200
+    </div>
+
+
+    <div
+        id="currentBidTeam"
+        class="bid-team"
+    >
+        Base Price
+    </div>
+
+
+    <div
+        id="auctionMessage"
+    ></div>
+
+
+    <div
+        id="auctionButtons"
+        class="auction-buttons hidden"
+    >
+
+        <button
+            class="btn"
+            onclick="quickBid(200)"
         >
-        </div>
+            + ₹200
+        </button>
 
-      </div>
+
+        <button
+            class="btn"
+            onclick="quickBid(500)"
+        >
+            + ₹500
+        </button>
 
 
-      <!-- TOP TEAM -->
-      <div class="side-card">
-
-        <div class="side-title">
-          💰 Team Budgets
-        </div>
-
-        <div id="budgetList"></div>
-
-      </div>
+        <button
+            class="btn"
+            onclick="quickBid(1000)"
+        >
+            + ₹1000
+        </button>
 
     </div>
 
-  </div>
+</div>
 
 
-  <!-- PLAYER RESULTS -->
-  <div class="table-card">
+<h2 class="section-title">
+    👥 Teams & Squads
+</h2>
+
+
+<div
+    id="teams"
+    class="team-grid"
+></div>
+
+
+<!-- PLAYER MANAGEMENT -->
+
+<section
+    id="management"
+    class="management hidden"
+>
+
+    <h2>
+        👥 Player Management
+    </h2>
+
+
+    <div class="add-player">
+
+        <input
+            id="newPlayerName"
+            placeholder="Enter new player name"
+        >
+
+
+        <button
+            class="btn btn-primary"
+            onclick="addPlayer()"
+        >
+            ➕ Add Player
+        </button>
+
+    </div>
+
+
+    <div class="player-table">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        #
+                    </th>
+
+                    <th>
+                        PLAYER
+                    </th>
+
+                    <th>
+                        STATUS
+                    </th>
+
+                    <th>
+                        TEAM
+                    </th>
+
+                    <th>
+                        PRICE
+                    </th>
+
+                    <th>
+                        ACTIONS
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="playerTable"
+            ></tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+</div>
+
+
+<!-- =====================================================
+     SIDE
+===================================================== -->
+
+<aside>
+
+
+<div class="side-card">
 
     <div class="side-title">
-      📋 Complete Player List
+        📢 Auction Activity
     </div>
 
-    <div class="scroll">
+    <div
+        id="activity"
+        class="activity"
+    ></div>
 
-      <table>
+</div>
 
-        <thead>
 
-          <tr>
-            <th>#</th>
-            <th>PLAYER</th>
-            <th>STATUS</th>
-            <th>TEAM</th>
-            <th>AMOUNT</th>
-          </tr>
+<div class="side-card">
 
-        </thead>
-
-        <tbody id="rows"></tbody>
-
-      </table>
-
+    <div class="side-title">
+        💰 Team Budgets
     </div>
 
-  </div>
+    <div
+        id="budgetList"
+    ></div>
+
+</div>
+
+
+</aside>
+
+
+</div>
 
 </section>
 
 </main>
 
 
+<!-- =====================================================
+     EDIT SOLD MODAL
+===================================================== -->
+
+<div
+    id="editSoldModal"
+    class="modal hidden"
+>
+
+<div class="modal-box">
+
+    <h3>
+        ✏️ Correct Sold Player
+    </h3>
+
+
+    <p
+        id="editSoldPlayerName"
+        style="color:#9ca5b2"
+    ></p>
+
+
+    <label>
+        TEAM
+    </label>
+
+    <select
+        id="editSoldTeam"
+    ></select>
+
+
+    <label style="margin-top:12px">
+        PURCHASE PRICE
+    </label>
+
+    <input
+        id="editSoldAmount"
+        type="number"
+        min="200"
+    >
+
+
+    <div class="modal-actions">
+
+        <button
+            class="btn"
+            onclick="closeModal('editSoldModal')"
+        >
+            CANCEL
+        </button>
+
+
+        <button
+            class="btn btn-primary"
+            onclick="saveSoldEdit()"
+        >
+            SAVE CORRECTION
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     RESET MODAL
+===================================================== -->
+
+<div
+    id="resetModal"
+    class="modal hidden"
+>
+
+<div class="modal-box">
+
+    <h3>
+        ⚠️ RESET ENTIRE AUCTION
+    </h3>
+
+
+    <p style="color:#9ba4b0">
+
+        This will remove all sold players,
+        restore all team budgets and return
+        the auction to the first player.
+
+    </p>
+
+
+    <p style="color:#ff7777">
+
+        This cannot be undone.
+
+    </p>
+
+
+    <input
+        id="resetConfirm"
+        placeholder="Type RESET"
+    >
+
+
+    <div class="modal-actions">
+
+        <button
+            class="btn"
+            onclick="closeModal('resetModal')"
+        >
+            CANCEL
+        </button>
+
+
+        <button
+            class="btn btn-red"
+            onclick="resetAuction()"
+        >
+            RESET AUCTION
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
 <script src="/socket.io/socket.io.js"></script>
+
 
 <script>
 
-const socket = io();
+/* =====================================================
+   SOCKET
+===================================================== */
 
-let state = null;
-
-let admin = false;
-
-const $ = x => document.getElementById(x);
-
-const fmt = n =>
-  Number(n || 0).toLocaleString("en-IN");
+const socket =
+    io();
 
 
-/* ENTRY */
+let state =
+    null;
 
-function showAdmin(){
 
-  $("choice").classList.add("hidden");
+let isAdmin =
+    localStorage.getItem(
+        "auctionAdmin"
+    ) === "true";
 
-  $("login").classList.remove("hidden");
 
-  $("mode").textContent = "🔐 ADMIN LOGIN";
+let preferredMode =
+    localStorage.getItem(
+        "auctionMode"
+    ) || "viewer";
+
+
+let editingSoldIndex =
+    null;
+
+
+/* =====================================================
+   ELEMENT HELPER
+===================================================== */
+
+function $(id){
+
+    return document.getElementById(id);
 
 }
 
 
-function showViewer(){
+/* =====================================================
+   FORMAT
+===================================================== */
 
-  $("choice").classList.add("hidden");
+function money(value){
 
-  $("auction").classList.remove("hidden");
-
-  $("mode").textContent = "👀 VIEWER";
+    return "₹" +
+        Number(
+            value || 0
+        ).toLocaleString(
+            "en-IN"
+        );
 
 }
 
 
-/* LOGIN */
+/* =====================================================
+   SOCKET UPDATE
+===================================================== */
+
+socket.on(
+    "update",
+    newState => {
+
+        state =
+            newState;
+
+        render();
+
+    }
+);
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function openAdminLogin(){
+
+    $("loginSection")
+        .classList
+        .remove("hidden");
+
+    $("appSection")
+        .classList
+        .add("hidden");
+
+}
+
 
 function login(){
 
-  socket.emit(
-    "login",
-    $("pin").value
-  );
+    const pin =
+        $("pinInput").value;
+
+
+    socket.emit(
+        "login",
+        pin
+    );
 
 }
 
 
-socket.on("login", ok => {
+socket.on(
+    "login",
+    success => {
 
-  if(!ok){
+        if(!success){
 
-    $("loginMsg").textContent =
-      "❌ Wrong PIN";
+            $("loginError")
+                .textContent =
+                "❌ Incorrect PIN";
 
-    return;
+            return;
 
-  }
-
-  admin = true;
-
-  $("login").classList.add("hidden");
-
-  $("auction").classList.remove("hidden");
-
-  $("admin").classList.remove("hidden");
-
-  $("mode").textContent =
-    "🔐 ADMIN";
-
-});
+        }
 
 
-/* ERROR */
-
-socket.on("errorMsg", message => {
-
-  $("err").textContent = message;
-
-  $("err").classList.remove("hidden");
-
-  setTimeout(() => {
-
-    $("err").classList.add("hidden");
-
-  },3000);
-
-});
+        isAdmin =
+            true;
 
 
-/* RECEIVE STATE */
-
-socket.on("update", s => {
-
-  state = s;
-
-  render();
-
-});
+        localStorage.setItem(
+            "auctionAdmin",
+            "true"
+        );
 
 
-/* MAIN RENDER */
+        localStorage.setItem(
+            "auctionMode",
+            "admin"
+        );
+
+
+        $("loginSection")
+            .classList
+            .add("hidden");
+
+
+        $("appSection")
+            .classList
+            .remove("hidden");
+
+
+        render();
+
+    }
+);
+
+
+/* =====================================================
+   RENDER
+===================================================== */
 
 function render(){
 
-  if(!state) return;
-
-  const players = state.players || [];
-
-  const teams = state.teams || [];
-
-  const current =
-    players[state.current] || players[0];
-
-  if(!current) return;
+    if(!state){
+        return;
+    }
 
 
-  /* STATS */
+    const players =
+        state.players || [];
 
-  const soldCount =
-    players.filter(p =>
-      p.status === "sold"
-    ).length;
 
-  const availableCount =
-    players.filter(p =>
-      p.status === "pending"
-    ).length;
+    const teams =
+        state.teams || [];
 
-  const highest =
-    Math.max(
-      0,
-      ...players.map(p =>
-        Number(p.amount || 0)
-      )
+
+    const sold =
+        players.filter(
+            p =>
+                p.status === "sold"
+        ).length;
+
+
+    const pending =
+        players.filter(
+            p =>
+                p.status === "pending"
+        ).length;
+
+
+    const unsold =
+        players.filter(
+            p =>
+                p.status === "unsold"
+        ).length;
+
+
+    const highest =
+        Math.max(
+            0,
+            ...players.map(
+                p =>
+                    Number(
+                        p.amount || 0
+                    )
+            )
+        );
+
+
+    $("totalPlayers")
+        .textContent =
+        players.length;
+
+
+    $("soldPlayers")
+        .textContent =
+        sold;
+
+
+    $("availablePlayers")
+        .textContent =
+        pending;
+
+
+    $("unsoldPlayers")
+        .textContent =
+        unsold;
+
+
+    $("highestBid")
+        .textContent =
+        money(highest);
+
+
+    renderCurrentPlayer();
+
+    renderTeams();
+
+    renderActivity();
+
+    renderBudgets();
+
+    renderPlayerManagement();
+
+    renderAdminControls();
+
+}
+
+
+/* =====================================================
+   CURRENT PLAYER
+===================================================== */
+
+function renderCurrentPlayer(){
+
+    const player =
+        state.players[
+            state.current
+        ];
+
+
+    if(!player){
+
+        $("currentPlayer")
+            .textContent =
+            "No Players";
+
+        return;
+
+    }
+
+
+    $("currentPlayer")
+        .textContent =
+        player.name;
+
+
+    $("currentStatus")
+        .textContent =
+        `Player ${state.current + 1}
+         of ${state.players.length}
+         • ${player.status.toUpperCase()}`;
+
+
+    $("currentBid")
+        .textContent =
+        money(
+            state.liveBid ||
+            200
+        );
+
+
+    if(
+        state.liveBidTeam !== "" &&
+        state.liveBidTeam !== null
+    ){
+
+        const team =
+            state.teams[
+                Number(
+                    state.liveBidTeam
+                )
+            ];
+
+
+        $("currentBidTeam")
+            .textContent =
+            team
+                ? "Current bid by " +
+                  team.name
+                : "Current bid";
+
+    }
+    else{
+
+        $("currentBidTeam")
+            .textContent =
+            "Base Price";
+
+    }
+
+
+    if(
+        player.status === "sold"
+    ){
+
+        $("auctionMessage")
+            .innerHTML =
+
+            `<div
+                style="
+                    margin-top:20px;
+                    padding:12px;
+                    border-radius:10px;
+                    background:#123720;
+                    color:#6bea9a;
+                "
+            >
+                🔨 SOLD to
+                <strong>
+                    ${player.team}
+                </strong>
+                for
+                <strong>
+                    ${money(player.amount)}
+                </strong>
+            </div>`;
+
+    }
+
+    else if(
+        player.status === "unsold"
+    ){
+
+        $("auctionMessage")
+            .innerHTML =
+
+            `<div
+                style="
+                    margin-top:20px;
+                    padding:12px;
+                    border-radius:10px;
+                    background:#3a181b;
+                    color:#ff7777;
+                "
+            >
+                ❌ UNSOLD
+            </div>`;
+
+    }
+
+    else{
+
+        $("auctionMessage")
+            .innerHTML =
+            "";
+
+    }
+
+
+    $("auctionButtons")
+        .classList.toggle(
+            "hidden",
+            !isAdmin ||
+            player.status !==
+            "pending"
+        );
+
+}
+
+
+/* =====================================================
+   TEAMS
+===================================================== */
+
+function renderTeams(){
+
+    $("teams").innerHTML =
+        state.teams.map(
+            (team, index) => {
+
+                const remaining =
+                    team.budget -
+                    team.spent;
+
+
+                const percent =
+                    team.budget > 0
+                        ? Math.min(
+                            100,
+                            (
+                                team.spent /
+                                team.budget
+                            ) * 100
+                        )
+                        : 0;
+
+
+                const players =
+                    team.players || [];
+
+
+                let squadHTML;
+
+
+                if(
+                    players.length === 0
+                ){
+
+                    squadHTML =
+                        `<div
+                            class="empty"
+                        >
+                            No players bought yet
+                        </div>`;
+
+                }
+                else{
+
+                    squadHTML =
+                        players.map(
+                            player =>
+
+                            `<div
+                                class="squad-player"
+                            >
+
+                                <span>
+                                    🏏
+                                    ${escapeHTML(
+                                        player.name
+                                    )}
+                                </span>
+
+                                <span
+                                    class="squad-price"
+                                >
+                                    ${money(
+                                        player.amount
+                                    )}
+                                </span>
+
+                            </div>`
+
+                        ).join("");
+
+                }
+
+
+                return `
+
+                <div
+                    class="team-card"
+                >
+
+                    <div
+                        class="team-head"
+                    >
+
+                        <div
+                            class="team-name"
+                        >
+                            🏆
+                            ${escapeHTML(
+                                team.name
+                            )}
+                        </div>
+
+                        <div
+                            class="player-count"
+                        >
+                            ${players.length}
+                            PLAYERS
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="remaining"
+                    >
+                        ${money(
+                            remaining
+                        )}
+                    </div>
+
+
+                    <div
+                        class="remaining-label"
+                    >
+                        REMAINING PURSE
+                    </div>
+
+
+                    <div
+                        class="progress"
+                    >
+
+                        <div
+                            style="
+                                width:${percent}%
+                            "
+                        ></div>
+
+                    </div>
+
+
+                    <div
+                        class="team-summary"
+                    >
+                        Spent:
+                        ${money(
+                            team.spent
+                        )}
+                        /
+                        ${money(
+                            team.budget
+                        )}
+                    </div>
+
+
+                    <div
+                        class="squad"
+                    >
+
+                        ${squadHTML}
+
+                    </div>
+
+
+                    <button
+                        class="btn team-download"
+                        onclick="
+                            downloadTeam(
+                                ${index}
+                            )
+                        "
+                    >
+                        📥 Download ${escapeHTML(
+                            team.name
+                        )}
+                    </button>
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =====================================================
+   PLAYER MANAGEMENT
+===================================================== */
+
+function renderPlayerManagement(){
+
+    $("management")
+        .classList.toggle(
+            "hidden",
+            !isAdmin
+        );
+
+
+    if(!isAdmin){
+        return;
+    }
+
+
+    $("playerTable")
+        .innerHTML =
+        state.players.map(
+            (player,index) => {
+
+                const statusClass =
+                    player.status;
+
+
+                let actions = `
+
+                    <button
+                        class="btn btn-small"
+                        onclick="
+                            editPlayerName(
+                                ${index}
+                            )
+                        "
+                    >
+                        ✏️ Edit
+                    </button>
+
+                `;
+
+
+                if(
+                    player.status ===
+                    "sold"
+                ){
+
+                    actions += `
+
+                    <button
+                        class="
+                            btn
+                            btn-small
+                            btn-blue
+                        "
+                        onclick="
+                            openSoldEditor(
+                                ${index}
+                            )
+                        "
+                    >
+                        💰 Correct Sale
+                    </button>
+
+                    `;
+
+                }
+                else{
+
+                    actions += `
+
+                    <button
+                        class="
+                            btn
+                            btn-small
+                            btn-red
+                        "
+                        onclick="
+                            removePlayer(
+                                ${index}
+                            )
+                        "
+                    >
+                        🗑️ Delete
+                    </button>
+
+                    `;
+
+                }
+
+
+                return `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(
+                                player.name
+                            )}
+                        </strong>
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="
+                                status
+                                ${statusClass}
+                            "
+                        >
+                            ${player.status}
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${
+                            player.team ||
+                            "-"
+                        }
+                    </td>
+
+                    <td>
+                        ${
+                            player.amount
+                                ? money(
+                                    player.amount
+                                  )
+                                : "-"
+                        }
+                    </td>
+
+                    <td>
+                        ${actions}
+                    </td>
+
+                </tr>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =====================================================
+   ADMIN CONTROLS
+===================================================== */
+
+function renderAdminControls(){
+
+    $("adminPanel")
+        .classList.toggle(
+            "hidden",
+            !isAdmin
+        );
+
+
+    $("modeBadge")
+        .textContent =
+        isAdmin
+            ? "🔐 ADMIN"
+            : "👀 VIEWER";
+
+
+    if(!isAdmin){
+        return;
+    }
+
+
+    $("playerSelect")
+        .innerHTML =
+        state.players.map(
+            (player,index) =>
+
+            `<option
+                value="${index}"
+                ${
+                    index ===
+                    state.current
+                        ? "selected"
+                        : ""
+                }
+            >
+                ${index + 1}.
+                ${escapeHTML(
+                    player.name
+                )}
+                —
+                ${player.status}
+            </option>`
+
+        ).join("");
+
+
+    $("teamSelect")
+        .innerHTML =
+        state.teams.map(
+            (team,index) =>
+
+            `<option
+                value="${index}"
+                ${
+                    Number(
+                        state.liveBidTeam
+                    ) === index
+                        ? "selected"
+                        : ""
+                }
+            >
+                ${escapeHTML(
+                    team.name
+                )}
+                —
+                ${money(
+                    team.budget -
+                    team.spent
+                )}
+                left
+            </option>`
+
+        ).join("");
+
+
+    $("bidAmount")
+        .value =
+        state.liveBid ||
+        200;
+
+}
+
+
+/* =====================================================
+   TEAM BUDGET LIST
+===================================================== */
+
+function renderBudgets(){
+
+    $("budgetList")
+        .innerHTML =
+        state.teams.map(
+            team =>
+
+            `<div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    padding:9px 0;
+                    border-bottom:
+                        1px solid #252c35;
+                "
+            >
+
+                <span>
+                    ${escapeHTML(
+                        team.name
+                    )}
+                </span>
+
+                <strong
+                    style="
+                        color:#ffad5c
+                    "
+                >
+                    ${money(
+                        team.budget -
+                        team.spent
+                    )}
+                </strong>
+
+            </div>`
+
+        ).join("");
+
+}
+
+
+/* =====================================================
+   ACTIVITY
+===================================================== */
+
+function renderActivity(){
+
+    const events =
+        state.players
+            .map(
+                (player,index) => ({
+                    player,
+                    index
+                })
+            )
+            .filter(
+                x =>
+                    x.player.status !==
+                    "pending"
+            )
+            .slice(-10)
+            .reverse();
+
+
+    if(
+        events.length === 0
+    ){
+
+        $("activity")
+            .innerHTML =
+            `<div
+                class="empty"
+            >
+                No auction activity yet.
+            </div>`;
+
+        return;
+
+    }
+
+
+    $("activity")
+        .innerHTML =
+        events.map(
+            x => {
+
+                const p =
+                    x.player;
+
+
+                if(
+                    p.status ===
+                    "sold"
+                ){
+
+                    return `
+
+                    <div
+                        class="activity-item"
+                    >
+
+                        🔨
+                        <strong>
+                            ${escapeHTML(
+                                p.name
+                            )}
+                        </strong>
+
+                        sold to
+
+                        <strong>
+                            ${escapeHTML(
+                                p.team
+                            )}
+                        </strong>
+
+                        for
+
+                        <strong>
+                            ${money(
+                                p.amount
+                            )}
+                        </strong>
+
+                    </div>
+
+                    `;
+
+                }
+
+
+                return `
+
+                <div
+                    class="activity-item"
+                >
+
+                    ❌
+
+                    <strong>
+                        ${escapeHTML(
+                            p.name
+                        )}
+                    </strong>
+
+                    went unsold.
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =====================================================
+   BID
+===================================================== */
+
+function placeBid(){
+
+    const amount =
+        Number(
+            $("bidAmount").value
+        );
+
+
+    const team =
+        Number(
+            $("teamSelect").value
+        );
+
+
+    socket.emit(
+        "bid",
+        {
+            amount,
+            team
+        }
+    );
+
+}
+
+
+function quickBid(increment){
+
+    if(!state){
+        return;
+    }
+
+
+    const current =
+        Number(
+            state.liveBid ||
+            200
+        );
+
+
+    $("bidAmount")
+        .value =
+        current +
+        increment;
+
+
+    placeBid();
+
+}
+
+
+/* =====================================================
+   SOLD
+===================================================== */
+
+function sellPlayer(){
+
+    if(
+        !confirm(
+            "Sell this player to the selected team?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    socket.emit(
+        "sold"
+    );
+
+}
+
+
+/* =====================================================
+   UNSOLD
+===================================================== */
+
+function markUnsold(){
+
+    if(
+        !confirm(
+            "Mark this player as UNSOLD?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    socket.emit(
+        "unsold"
+    );
+
+}
+
+
+/* =====================================================
+   NEXT
+===================================================== */
+
+function nextPlayer(){
+
+    socket.emit(
+        "next"
+    );
+
+}
+
+
+/* =====================================================
+   SELECT PLAYER
+===================================================== */
+
+function selectPlayer(){
+
+    const index =
+        Number(
+            $("playerSelect").value
+        );
+
+
+    socket.emit(
+        "select",
+        index
+    );
+
+}
+
+
+/* =====================================================
+   UNDO SALE
+===================================================== */
+
+function undoSale(){
+
+    if(
+        !confirm(
+            "Undo the last SOLD player?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    socket.emit(
+        "undoSale"
+    );
+
+}
+
+
+/* =====================================================
+   ADD PLAYER
+===================================================== */
+
+function addPlayer(){
+
+    const input =
+        $("newPlayerName");
+
+
+    const name =
+        input.value.trim();
+
+
+    if(!name){
+
+        alert(
+            "Enter a player name."
+        );
+
+        return;
+
+    }
+
+
+    socket.emit(
+        "addPlayer",
+        name
     );
 
 
-  $("totalPlayers").textContent =
-    players.length;
+    input.value =
+        "";
 
-  $("soldPlayers").textContent =
-    soldCount;
-
-  $("availablePlayers").textContent =
-    availableCount;
-
-  $("highestBid").textContent =
-    fmt(highest);
+}
 
 
-  /* CURRENT PLAYER */
+/* =====================================================
+   EDIT PLAYER NAME
+===================================================== */
 
-  $("currentPlayer").textContent =
-    current.name;
+function editPlayerName(index){
 
-  $("currentNo").textContent =
-    `Player ${state.current + 1} of ${players.length} • ${current.status.toUpperCase()}`;
-
-
-  $("liveBid").textContent =
-    fmt(state.liveBid || 200);
+    const player =
+        state.players[
+            index
+        ];
 
 
-  if(state.liveBidTeam !== ""){
+    const newName =
+        prompt(
+            "Enter new player name:",
+            player.name
+        );
+
+
+    if(
+        newName === null
+    ){
+
+        return;
+
+    }
+
+
+    if(
+        !newName.trim()
+    ){
+
+        return;
+
+    }
+
+
+    socket.emit(
+        "editPlayer",
+        {
+            index,
+            name:
+                newName.trim()
+        }
+    );
+
+}
+
+
+/* =====================================================
+   REMOVE PLAYER
+===================================================== */
+
+function removePlayer(index){
+
+    const player =
+        state.players[
+            index
+        ];
+
+
+    if(
+        !confirm(
+            `Delete ${player.name}?`
+        )
+    ){
+
+        return;
+
+    }
+
+
+    socket.emit(
+        "removePlayer",
+        index
+    );
+
+}
+
+
+/* =====================================================
+   EDIT SOLD PLAYER
+===================================================== */
+
+function openSoldEditor(index){
+
+    const player =
+        state.players[
+            index
+        ];
+
+
+    editingSoldIndex =
+        index;
+
+
+    $("editSoldPlayerName")
+        .textContent =
+        `${player.name}
+         • Current:
+         ${player.team}
+         • ${money(player.amount)}`;
+
+
+    $("editSoldTeam")
+        .innerHTML =
+        state.teams.map(
+            (team,i) =>
+
+            `<option
+                value="${i}"
+                ${
+                    team.name ===
+                    player.team
+                        ? "selected"
+                        : ""
+                }
+            >
+                ${escapeHTML(
+                    team.name
+                )}
+            </option>`
+
+        ).join("");
+
+
+    $("editSoldAmount")
+        .value =
+        player.amount;
+
+
+    $("editSoldModal")
+        .classList
+        .remove("hidden");
+
+}
+
+
+function saveSoldEdit(){
+
+    if(
+        editingSoldIndex ===
+        null
+    ){
+
+        return;
+
+    }
+
 
     const team =
-      teams[state.liveBidTeam];
+        Number(
+            $("editSoldTeam").value
+        );
 
-    $("liveTeam").textContent =
-      team
-      ? "Current bid by " + team.name
-      : "Current bid";
 
-  }else{
+    const amount =
+        Number(
+            $("editSoldAmount").value
+        );
 
-    $("liveTeam").textContent =
-      "Base Price: 200";
 
-  }
+    socket.emit(
+        "editSoldPlayer",
+        {
+            index:
+                editingSoldIndex,
 
+            team,
 
-  /* RESULT */
+            amount
+        }
+    );
 
-  if(current.status === "sold"){
 
-    $("result").innerHTML =
-      `<div class="notice sold-notice">
-        🔨 SOLD — ${current.team}
-        for ${fmt(current.amount)} points
-      </div>`;
+    closeModal(
+        "editSoldModal"
+    );
 
-  }
 
-  else if(current.status === "unsold"){
-
-    $("result").innerHTML =
-      `<div class="notice unsold-notice">
-        ❌ PLAYER UNSOLD
-      </div>`;
-
-  }
-
-  else{
-
-    $("result").innerHTML =
-      `<div class="notice">
-        🔴 BIDDING IS LIVE
-      </div>`;
-
-  }
-
-
-  /* TEAM CARDS */
-
-  $("teams").innerHTML =
-    teams.map((team,index) => {
-
-      const remaining =
-        team.budget - team.spent;
-
-      const percentage =
-        team.budget > 0
-        ? Math.min(
-            100,
-            (team.spent / team.budget) * 100
-          )
-        : 0;
-
-      const playersHTML =
-        team.players &&
-        team.players.length
-
-        ? team.players.map(player =>
-
-          `<div class="team-player">
-
-            <span>
-              🏏 ${player.name}
-            </span>
-
-            <span class="player-price">
-              ${fmt(player.amount)}
-            </span>
-
-          </div>`
-
-        ).join("")
-
-        : `<div class="empty">
-            No players purchased yet
-          </div>`;
-
-
-      return `
-
-        <div class="team-card">
-
-          <div class="team-header">
-
-            <div class="team-name">
-              ${team.name}
-            </div>
-
-            <div class="team-count">
-              ${team.players?.length || 0} PLAYERS
-            </div>
-
-          </div>
-
-          <div class="money">
-            ${fmt(remaining)}
-          </div>
-
-          <div class="money-label">
-            REMAINING PURSE
-          </div>
-
-          <div class="progress">
-
-            <div
-              class="progress-bar"
-              style="width:${percentage}%"
-            ></div>
-
-          </div>
-
-          <div class="team-spent">
-            Spent ${fmt(team.spent)}
-            / ${fmt(team.budget)}
-          </div>
-
-          <div class="team-players">
-
-            ${playersHTML}
-
-          </div>
-
-        </div>
-
-      `;
-
-    }).join("");
-
-
-  /* BUDGET SIDE LIST */
-
-  $("budgetList").innerHTML =
-    teams.map(team => {
-
-      const remaining =
-        team.budget - team.spent;
-
-      return `
-
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          padding:9px 0;
-          border-bottom:1px solid #252b34;
-        ">
-
-          <span>
-            ${team.name}
-          </span>
-
-          <strong style="color:#ffab5c">
-            ${fmt(remaining)}
-          </strong>
-
-        </div>
-
-      `;
-
-    }).join("");
-
-
-  /* PLAYER TABLE */
-
-  $("rows").innerHTML =
-    players.map((player,index) => `
-
-      <tr>
-
-        <td>${index + 1}</td>
-
-        <td>
-          <strong>${player.name}</strong>
-        </td>
-
-        <td>
-          <span class="status ${player.status}">
-            ${player.status}
-          </span>
-        </td>
-
-        <td>
-          ${player.team || "-"}
-        </td>
-
-        <td>
-          ${player.amount
-            ? fmt(player.amount)
-            : "-"
-          }
-        </td>
-
-      </tr>
-
-    `).join("");
-
-
-  /* ADMIN */
-
-  if(admin){
-
-    $("selPlayer").innerHTML =
-      players.map((player,index) => `
-
-        <option
-          value="${index}"
-          ${index === state.current
-            ? "selected"
-            : ""
-          }
-        >
-          ${index + 1}.
-          ${player.name}
-          — ${player.status}
-        </option>
-
-      `).join("");
-
-
-    $("selTeam").innerHTML =
-      teams.map((team,index) => `
-
-        <option
-          value="${index}"
-          ${index === Number(state.liveBidTeam)
-            ? "selected"
-            : ""
-          }
-        >
-          ${team.name}
-          (${fmt(team.budget - team.spent)} left)
-        </option>
-
-      `).join("");
-
-
-    $("amount").value =
-      state.liveBid || 200;
-
-  }
-
-
-  /* ACTIVITY */
-
-  buildActivity(players);
+    editingSoldIndex =
+        null;
 
 }
 
 
-/* ACTIVITY */
+/* =====================================================
+   RESET
+===================================================== */
 
-function buildActivity(players){
+function openResetModal(){
 
-  const events = [];
+    $("resetConfirm")
+        .value =
+        "";
 
-  players.forEach((player,index) => {
+    $("resetModal")
+        .classList
+        .remove("hidden");
 
-    if(player.status === "sold"){
+}
 
-      events.push({
 
-        text:
-          `🔨 ${player.name} sold to
-           <strong>${player.team}</strong>
-           for <strong>${fmt(player.amount)}</strong>`,
+function resetAuction(){
 
-        index
+    const text =
+        $("resetConfirm")
+            .value
+            .trim();
 
-      });
+
+    if(
+        text !==
+        "RESET"
+    ){
+
+        alert(
+            "Type RESET exactly."
+        );
+
+        return;
 
     }
 
-    else if(player.status === "unsold"){
 
-      events.push({
+    socket.emit(
+        "resetAuction"
+    );
 
-        text:
-          `❌ ${player.name}
-           went unsold`,
 
-        index
+    closeModal(
+        "resetModal"
+    );
 
-      });
+}
+
+
+/* =====================================================
+   DOWNLOAD
+===================================================== */
+
+function downloadExcel(){
+
+    window.location.href =
+        "/download-excel";
+
+}
+
+
+function downloadTeam(index){
+
+    /*
+     * Download the complete workbook.
+     * The selected team is already represented
+     * as its own Excel sheet.
+     */
+
+    window.location.href =
+        "/download-excel";
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+function closeModal(id){
+
+    $(id)
+        .classList
+        .add("hidden");
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+socket.on(
+    "errorMsg",
+    message => {
+
+        alert(
+            "⚠️ " +
+            message
+        );
 
     }
-
-  });
-
-
-  events.sort((a,b) =>
-    b.index - a.index
-  );
-
-
-  if(!events.length){
-
-    $("activity").innerHTML =
-      `<div class="empty">
-        No auction activity yet.
-      </div>`;
-
-    return;
-
-  }
-
-
-  $("activity").innerHTML =
-    events.slice(0,10).map(event => `
-
-      <div class="activity-item">
-
-        ${event.text}
-
-        <div class="time">
-          Auction activity
-        </div>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-/* AUCTION ACTIONS */
-
-function bid(){
-
-  socket.emit("bid",{
-
-    amount:
-      $("amount").value,
-
-    team:
-      $("selTeam").value
-
-  });
-
-}
-
-
-function sold(){
-
-  socket.emit("sold");
-
-}
-
-
-function unsold(){
-
-  socket.emit("unsold");
-
-}
-
-
-function next(){
-
-  socket.emit("next");
-
-}
-
-
-/* PLAYER SELECT */
-
-document.addEventListener(
-  "change",
-  event => {
-
-    if(event.target.id === "selPlayer"){
-
-      socket.emit(
-        "select",
-        Number(event.target.value)
-      );
-
-    }
-
-  }
 );
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(value){
+
+    return String(
+        value
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =====================================================
+   REMEMBER MODE
+===================================================== */
+
+if(
+    preferredMode ===
+    "admin"
+){
+
+    /*
+     * We remember that the user was using
+     * admin mode, but still require the PIN
+     * when the browser session is not authenticated.
+     */
+
+    if(!isAdmin){
+
+        setTimeout(
+            () => {
+
+                openAdminLogin();
+
+            },
+            300
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   INITIAL ADMIN UI
+===================================================== */
+
+if(isAdmin){
+
+    $("adminPanel")
+        .classList
+        .remove("hidden");
+
+}
+
+
+/* =====================================================
+   AUTO FOCUS
+===================================================== */
+
+$("pinInput")
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if(
+                event.key ===
+                "Enter"
+            ){
+
+                login();
+
+            }
+
+        }
+    );
 
 </script>
 
 </body>
+
 </html>
