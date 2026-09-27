@@ -18,7 +18,7 @@ const BASE_PRICE = 200;
 
 const TEAM_NAMES = [
     "Chida Team",
-    "Peetham Team",
+    "Preetham Team",
     "Siddu Team",
     "Nithin Team",
     "Kshamay Team"
