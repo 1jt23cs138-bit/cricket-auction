@@ -13,10 +13,8 @@ const ADMIN_PIN = "2026";
 
 const DATA_FILE = path.join(__dirname, "auction-data.json");
 
-
-// ============================================================
-// TEAMS
-// ============================================================
+const INITIAL_BUDGET = 20000;
+const BASE_PRICE = 200;
 
 const TEAM_NAMES = [
     "Chida Team",
@@ -26,16 +24,16 @@ const TEAM_NAMES = [
     "Kshamay Team"
 ];
 
-const INITIAL_BUDGET = 20000;
+/*
+==========================================================
+PLAYER LIST
+==========================================================
 
-
-// ============================================================
-// ALL PLAYERS
-// IMPORTANT:
-// DO NOT REMOVE DUPLICATES
-// DO NOT FILTER YES / NO
-// DO NOT CHANGE THE LIST
-// ============================================================
+IMPORTANT:
+Every name is included.
+Duplicate names are NOT removed.
+Google Form YES/NO answers are NOT considered.
+*/
 
 const DEFAULT_PLAYERS = [
     "Adarsh",
@@ -90,14 +88,16 @@ const DEFAULT_PLAYERS = [
     "Shashank gowda s"
 ];
 
+/*
+==========================================================
+CREATE FRESH AUCTION
+==========================================================
+*/
 
-// ============================================================
-// CREATE NEW AUCTION
-// ============================================================
-
-function createNewAuction() {
+function createFreshAuction() {
 
     return {
+        version: 2,
 
         players: DEFAULT_PLAYERS.map((name, index) => ({
             id: index + 1,
@@ -116,7 +116,7 @@ function createNewAuction() {
 
         current: 0,
 
-        liveBid: 200,
+        liveBid: BASE_PRICE,
 
         liveBidTeam: null,
 
@@ -124,10 +124,11 @@ function createNewAuction() {
     };
 }
 
-
-// ============================================================
-// LOAD SAVED AUCTION
-// ============================================================
+/*
+==========================================================
+LOAD STATE
+==========================================================
+*/
 
 let state;
 
@@ -135,41 +136,82 @@ function loadState() {
 
     try {
 
-        if (fs.existsSync(DATA_FILE)) {
+        if (!fs.existsSync(DATA_FILE)) {
 
-            const data =
-                fs.readFileSync(DATA_FILE, "utf8");
+            console.log("No saved auction found.");
+            console.log("Creating fresh auction.");
 
-            state = JSON.parse(data);
-
-            normalizeState();
-
-            console.log("Saved auction loaded.");
-
-        } else {
-
-            state = createNewAuction();
+            state = createFreshAuction();
 
             saveState();
 
-            console.log("New auction created.");
+            return;
         }
+
+        const raw = fs.readFileSync(
+            DATA_FILE,
+            "utf8"
+        );
+
+        const saved = JSON.parse(raw);
+
+        /*
+        IMPORTANT:
+
+        If the old JSON file has an old player list,
+        don't allow it to replace our new list.
+
+        We use version 2 for the new system.
+        */
+
+        if (
+            !saved ||
+            saved.version !== 2 ||
+            !Array.isArray(saved.players)
+        ) {
+
+            console.log(
+                "Old auction data detected."
+            );
+
+            console.log(
+                "Creating new auction with current player list."
+            );
+
+            state = createFreshAuction();
+
+            saveState();
+
+            return;
+        }
+
+        state = saved;
+
+        normalizeState();
+
+        console.log(
+            `Saved auction loaded: ${state.players.length} players`
+        );
 
     } catch (error) {
 
-        console.log("Error loading auction:");
+        console.log(
+            "Could not load saved auction."
+        );
+
         console.log(error);
 
-        state = createNewAuction();
+        state = createFreshAuction();
 
         saveState();
     }
 }
 
-
-// ============================================================
-// SAVE
-// ============================================================
+/*
+==========================================================
+SAVE STATE
+==========================================================
+*/
 
 function saveState() {
 
@@ -183,59 +225,52 @@ function saveState() {
 
     } catch (error) {
 
-        console.log("Error saving auction:");
+        console.log(
+            "Could not save auction:"
+        );
+
         console.log(error);
     }
 }
 
-
-// ============================================================
-// NORMALIZE STATE
-// ============================================================
+/*
+==========================================================
+NORMALIZE
+==========================================================
+*/
 
 function normalizeState() {
 
-    if (!state || typeof state !== "object") {
-
-        state = createNewAuction();
-
-        return;
-    }
-
-
-    if (!Array.isArray(state.players)) {
+    if (!state.players) {
         state.players = [];
     }
 
-
-    if (!Array.isArray(state.teams)) {
+    if (!state.teams) {
         state.teams = [];
     }
 
-
-    if (!Array.isArray(state.history)) {
+    if (!state.history) {
         state.history = [];
     }
 
-
-    if (typeof state.current !== "number") {
+    if (
+        typeof state.current !== "number" ||
+        state.current < 0
+    ) {
         state.current = 0;
     }
 
-
-    if (typeof state.liveBid !== "number") {
-        state.liveBid = 200;
+    if (
+        typeof state.liveBid !== "number"
+    ) {
+        state.liveBid = BASE_PRICE;
     }
 
-
-    if (state.liveBidTeam === undefined) {
+    if (
+        state.liveBidTeam === undefined
+    ) {
         state.liveBidTeam = null;
     }
-
-
-    // --------------------------------------------------------
-    // ENSURE PLAYER IDs
-    // --------------------------------------------------------
 
     state.players.forEach((player, index) => {
 
@@ -251,92 +286,75 @@ function normalizeState() {
             player.status = "pending";
         }
 
-        if (typeof player.amount !== "number") {
+        if (
+            typeof player.amount !== "number"
+        ) {
             player.amount =
                 Number(player.amount) || 0;
         }
 
         if (
+            player.status !== "pending" &&
             player.status !== "sold" &&
             player.status !== "unsold"
         ) {
-
             player.status = "pending";
         }
 
-    });
-
-
-    // --------------------------------------------------------
-    // CREATE TEAM STRUCTURE
-    // --------------------------------------------------------
-
-    const oldTeams =
-        Array.isArray(state.teams)
-            ? state.teams
-            : [];
-
-
-    const oldTeamMap = {};
-
-
-    oldTeams.forEach(team => {
-
-        if (team && team.name) {
-
-            oldTeamMap[team.name] = team;
+        if (player.status !== "sold") {
+            player.team = null;
+            player.amount = 0;
         }
-
     });
-
-
-    state.teams =
-        TEAM_NAMES.map(name => {
-
-            const oldTeam =
-                oldTeamMap[name];
-
-
-            return {
-
-                name: name,
-
-                budget:
-                    oldTeam &&
-                    typeof oldTeam.budget === "number"
-                        ? oldTeam.budget
-                        : INITIAL_BUDGET,
-
-                spent: 0,
-
-                players: []
-            };
-
-        });
-
-
-    // --------------------------------------------------------
-    // REBUILD TEAM DATA
-    // --------------------------------------------------------
 
     rebuildTeams();
 }
 
-
-// ============================================================
-// REBUILD TEAMS
-// ============================================================
+/*
+==========================================================
+REBUILD TEAM INFORMATION
+==========================================================
+*/
 
 function rebuildTeams() {
 
-    state.teams.forEach(team => {
+    const oldTeams = Array.isArray(state.teams)
+        ? state.teams
+        : [];
 
-        team.spent = 0;
+    const oldMap = {};
 
-        team.players = [];
+    oldTeams.forEach(team => {
+
+        if (team && team.name) {
+            oldMap[team.name] = team;
+        }
 
     });
 
+    state.teams = TEAM_NAMES.map(name => {
+
+        const old = oldMap[name];
+
+        return {
+            name: name,
+
+            budget:
+                old &&
+                typeof old.budget === "number"
+                    ? old.budget
+                    : INITIAL_BUDGET,
+
+            spent: 0,
+
+            players: []
+        };
+    });
+
+    /*
+    Recalculate from sold players.
+    This prevents incorrect budgets.
+    */
 
     state.players.forEach(player => {
 
@@ -344,77 +362,59 @@ function rebuildTeams() {
             return;
         }
 
-
-        const team =
-            state.teams.find(
-                t => t.name === player.team
-            );
-
+        const team = state.teams.find(
+            t => t.name === player.team
+        );
 
         if (!team) {
             return;
         }
 
-
-        const amount =
+        const price =
             Number(player.amount) || 0;
 
-
-        team.spent += amount;
-
+        team.spent += price;
 
         team.players.push({
-
             id: player.id,
-
             name: player.name,
-
-            amount: amount
-
+            amount: price
         });
-
     });
 }
 
-
-// ============================================================
-// SAVE HISTORY
-// ============================================================
+/*
+==========================================================
+HISTORY
+==========================================================
+*/
 
 function saveHistory() {
 
-    const snapshot =
-        JSON.stringify({
+    const snapshot = {
+        players: JSON.parse(
+            JSON.stringify(state.players)
+        ),
 
-            players: state.players,
+        current: state.current,
 
-            teams: state.teams,
+        liveBid: state.liveBid,
 
-            current: state.current,
-
-            liveBid: state.liveBid,
-
-            liveBidTeam: state.liveBidTeam,
-
-            history: []
-
-        });
-
+        liveBidTeam: state.liveBidTeam
+    };
 
     state.history.push(snapshot);
 
-
-    // Keep last 50 changes
     if (state.history.length > 50) {
-
         state.history.shift();
     }
 }
 
-
-// ============================================================
-// BROADCAST
-// ============================================================
+/*
+==========================================================
+BROADCAST
+==========================================================
+*/
 
 function broadcast() {
 
@@ -422,15 +422,44 @@ function broadcast() {
 
     saveState();
 
-    io.emit("update", state);
+    io.emit(
+        "state",
+        getPublicState()
+    );
 }
 
+/*
+==========================================================
+PUBLIC STATE
+==========================================================
+*/
 
-// ============================================================
-// ERROR MESSAGE
-// ============================================================
+function getPublicState() {
 
-function sendError(socket, message) {
+    rebuildTeams();
+
+    return {
+        version: state.version,
+
+        players: state.players,
+
+        teams: state.teams,
+
+        current: state.current,
+
+        liveBid: state.liveBid,
+
+        liveBidTeam: state.liveBidTeam
+    };
+}
+
+/*
+==========================================================
+ERROR
+==========================================================
+*/
+
+function error(socket, message) {
 
     socket.emit(
         "errorMsg",
@@ -438,10 +467,11 @@ function sendError(socket, message) {
     );
 }
 
-
-// ============================================================
-// VALID PLAYER
-// ============================================================
+/*
+==========================================================
+VALID PLAYER
+==========================================================
+*/
 
 function validPlayer(index) {
 
@@ -452,49 +482,40 @@ function validPlayer(index) {
     );
 }
 
-
-// ============================================================
-// STATIC FILES
-// ============================================================
+/*
+==========================================================
+STATIC FILES
+==========================================================
+*/
 
 app.use(express.static(__dirname));
-
-
-// ============================================================
-// HOME
-// ============================================================
 
 app.get("/", (req, res) => {
 
     res.sendFile(
         path.join(__dirname, "index.html")
     );
-
 });
 
-
-// ============================================================
-// DOWNLOAD TEAM-WISE CSV
-// ============================================================
+/*
+==========================================================
+DOWNLOAD CSV
+==========================================================
+*/
 
 app.get("/download-excel", (req, res) => {
 
     rebuildTeams();
 
-
     let csv = "";
 
-
-    // --------------------------------------------------------
-    // TEAM BY TEAM
-    // --------------------------------------------------------
+    csv += "CRICKET AUCTION TEAM-WISE RESULTS\n\n";
 
     state.teams.forEach(team => {
 
         csv += `"${escapeCSV(team.name)}"\n`;
 
         csv += `"Player Name","Sold Price"\n`;
-
 
         if (team.players.length === 0) {
 
@@ -506,11 +527,8 @@ app.get("/download-excel", (req, res) => {
 
                 csv +=
                     `"${escapeCSV(player.name)}","${player.amount}"\n`;
-
             });
-
         }
-
 
         csv +=
             `"Total Spent","${team.spent}"\n`;
@@ -518,54 +536,35 @@ app.get("/download-excel", (req, res) => {
         csv +=
             `"Remaining Budget","${team.budget - team.spent}"\n`;
 
-        csv += "\n\n";
-
+        csv += "\n";
     });
 
-
-    // --------------------------------------------------------
-    // COMPLETE SOLD LIST
-    // --------------------------------------------------------
+    csv += "\n";
 
     csv += `"ALL SOLD PLAYERS"\n`;
 
-    csv +=
-        `"Player Name","Team","Sold Price"\n`;
-
+    csv += `"Player Name","Team","Price"\n`;
 
     state.players
-        .filter(
-            player =>
-                player.status === "sold"
-        )
+        .filter(p => p.status === "sold")
         .forEach(player => {
 
             csv +=
                 `"${escapeCSV(player.name)}","${escapeCSV(player.team)}","${player.amount}"\n`;
-
         });
-
 
     res.setHeader(
         "Content-Type",
         "text/csv; charset=utf-8"
     );
 
-
     res.setHeader(
         "Content-Disposition",
         "attachment; filename=cricket-auction-team-wise.csv"
     );
 
-
     res.send(csv);
-
 });
-
-
-// ============================================================
-// CSV ESCAPE
-// ============================================================
 
 function escapeCSV(value) {
 
@@ -573,56 +572,54 @@ function escapeCSV(value) {
         .replace(/"/g, '""');
 }
 
-
-// ============================================================
-// SOCKET.IO
-// ============================================================
+/*
+==========================================================
+SOCKET
+==========================================================
+*/
 
 io.on("connection", socket => {
 
     console.log(
-        "Client connected:",
+        "Connected:",
         socket.id
     );
 
-
-    // Send current state immediately
     socket.emit(
-        "update",
-        state
+        "state",
+        getPublicState()
     );
 
-
-    // ========================================================
-    // ADMIN LOGIN
-    // ========================================================
+    /*
+    ========================================================
+    LOGIN
+    ========================================================
+    */
 
     socket.on("login", pin => {
 
         const correct =
             String(pin) === ADMIN_PIN;
 
-
         socket.emit(
-            "login",
+            "loginResult",
             correct
         );
-
     });
 
+    /*
+    ========================================================
+    SELECT PLAYER
+    ========================================================
+    */
 
-    // ========================================================
-    // SELECT PLAYER
-    // ========================================================
-
-    socket.on("select", index => {
+    socket.on("selectPlayer", index => {
 
         index = Number(index);
 
-
         if (!validPlayer(index)) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid player."
             );
@@ -630,47 +627,41 @@ io.on("connection", socket => {
             return;
         }
 
-
         state.current = index;
-
 
         const player =
             state.players[index];
 
-
         if (player.status === "pending") {
 
-            state.liveBid = 200;
+            state.liveBid = BASE_PRICE;
 
             state.liveBidTeam = null;
-
         }
 
-
         broadcast();
-
     });
 
+    /*
+    ========================================================
+    UPDATE BID
+    ========================================================
+    */
 
-    // ========================================================
-    // UPDATE BID
-    // ========================================================
-
-    socket.on("bid", data => {
+    socket.on("updateBid", data => {
 
         const playerIndex =
-            Number(data?.playerIndex);
+            Number(data.playerIndex);
 
         const teamIndex =
-            Number(data?.team);
+            Number(data.teamIndex);
 
         const amount =
-            Number(data?.amount);
-
+            Number(data.amount);
 
         if (!validPlayer(playerIndex)) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid player."
             );
@@ -678,10 +669,9 @@ io.on("connection", socket => {
             return;
         }
 
-
         if (!state.teams[teamIndex]) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid team."
             );
@@ -689,14 +679,28 @@ io.on("connection", socket => {
             return;
         }
 
+        if (
+            !Number.isFinite(amount) ||
+            amount < BASE_PRICE
+        ) {
+
+            error(
+                socket,
+                `Price must be at least ₹${BASE_PRICE}.`
+            );
+
+            return;
+        }
 
         const player =
             state.players[playerIndex];
 
+        const team =
+            state.teams[teamIndex];
 
         if (player.status !== "pending") {
 
-            sendError(
+            error(
                 socket,
                 "This player is already completed."
             );
@@ -704,76 +708,51 @@ io.on("connection", socket => {
             return;
         }
 
-
-        if (
-            !Number.isFinite(amount) ||
-            amount < 200
-        ) {
-
-            sendError(
-                socket,
-                "Minimum price is ₹200."
-            );
-
-            return;
-        }
-
-
-        const team =
-            state.teams[teamIndex];
-
-
         const remaining =
             team.budget - team.spent;
 
-
         if (amount > remaining) {
 
-            sendError(
+            error(
                 socket,
-                `${team.name} has only ₹${remaining} remaining.`
+                `${team.name} only has ₹${remaining} left.`
             );
 
             return;
         }
-
 
         state.current =
             playerIndex;
 
-
         state.liveBid =
             amount;
-
 
         state.liveBidTeam =
             teamIndex;
 
-
         broadcast();
-
     });
 
+    /*
+    ========================================================
+    SOLD
+    ========================================================
+    */
 
-    // ========================================================
-    // SOLD
-    // ========================================================
-
-    socket.on("sold", data => {
+    socket.on("sellPlayer", data => {
 
         const playerIndex =
-            Number(data?.playerIndex);
+            Number(data.playerIndex);
 
         const teamIndex =
-            Number(data?.team);
+            Number(data.teamIndex);
 
         const amount =
-            Number(data?.amount);
-
+            Number(data.amount);
 
         if (!validPlayer(playerIndex)) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid player."
             );
@@ -781,10 +760,9 @@ io.on("connection", socket => {
             return;
         }
 
-
         if (!state.teams[teamIndex]) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid team."
             );
@@ -792,13 +770,12 @@ io.on("connection", socket => {
             return;
         }
 
-
         if (
             !Number.isFinite(amount) ||
-            amount < 200
+            amount < BASE_PRICE
         ) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid sale price."
             );
@@ -806,91 +783,15 @@ io.on("connection", socket => {
             return;
         }
 
-
         const player =
             state.players[playerIndex];
-
 
         const team =
             state.teams[teamIndex];
 
-
         if (player.status !== "pending") {
 
-            sendError(
-                socket,
-                "This player is already sold or unsold."
-            );
-
-            return;
-        }
-
-
-        const remaining =
-            team.budget - team.spent;
-
-
-        if (amount > remaining) {
-
-            sendError(
-                socket,
-                `${team.name} has only ₹${remaining} remaining.`
-            );
-
-            return;
-        }
-
-
-        // Save state before sale
-        saveHistory();
-
-
-        // ====================================================
-        // THIS IS THE IMPORTANT PART
-        // EXACT PRICE + EXACT TEAM ARE SAVED
-        // ====================================================
-
-        player.status = "sold";
-
-        player.team = team.name;
-
-        player.amount = amount;
-
-
-        state.current =
-            playerIndex;
-
-
-        state.liveBid = 200;
-
-        state.liveBidTeam = null;
-
-
-        rebuildTeams();
-
-        broadcast();
-
-    });
-
-
-    // ========================================================
-    // UNSOLD
-    // ========================================================
-
-    socket.on("unsold", () => {
-
-        const player =
-            state.players[state.current];
-
-
-        if (!player) {
-            return;
-        }
-
-
-        if (player.status !== "pending") {
-
-            sendError(
+            error(
                 socket,
                 "This player is already completed."
             );
@@ -898,9 +799,83 @@ io.on("connection", socket => {
             return;
         }
 
+        const remaining =
+            team.budget - team.spent;
+
+        if (amount > remaining) {
+
+            error(
+                socket,
+                `${team.name} only has ₹${remaining} remaining.`
+            );
+
+            return;
+        }
+
+        /*
+        SAVE BEFORE CHANGING
+        */
 
         saveHistory();
 
+        /*
+        EXACT TEAM
+        EXACT PRICE
+        */
+
+        player.status = "sold";
+
+        player.team = team.name;
+
+        player.amount = amount;
+
+        state.current =
+            playerIndex;
+
+        state.liveBid =
+            BASE_PRICE;
+
+        state.liveBidTeam =
+            null;
+
+        broadcast();
+    });
+
+    /*
+    ========================================================
+    UNSOLD
+    ========================================================
+    */
+
+    socket.on("markUnsold", index => {
+
+        index =
+            Number(index);
+
+        if (!validPlayer(index)) {
+
+            error(
+                socket,
+                "Invalid player."
+            );
+
+            return;
+        }
+
+        const player =
+            state.players[index];
+
+        if (player.status !== "pending") {
+
+            error(
+                socket,
+                "Player is already completed."
+            );
+
+            return;
+        }
+
+        saveHistory();
 
         player.status = "unsold";
 
@@ -908,67 +883,60 @@ io.on("connection", socket => {
 
         player.amount = 0;
 
+        state.current = index;
 
-        state.liveBid = 200;
+        state.liveBid = BASE_PRICE;
 
         state.liveBidTeam = null;
 
-
         broadcast();
-
     });
 
+    /*
+    ========================================================
+    NEXT PLAYER
+    ========================================================
+    */
 
-    // ========================================================
-    // NEXT PLAYER
-    // ========================================================
-
-    socket.on("next", () => {
+    socket.on("nextPlayer", () => {
 
         if (state.players.length === 0) {
             return;
         }
 
-
         let next =
             state.current + 1;
-
 
         if (
             next >=
             state.players.length
         ) {
-
             next = 0;
         }
 
+        state.current = next;
 
-        state.current =
-            next;
-
-
-        state.liveBid = 200;
+        state.liveBid = BASE_PRICE;
 
         state.liveBidTeam = null;
 
-
         broadcast();
-
     });
 
+    /*
+    ========================================================
+    UNDO
+    ========================================================
+    */
 
-    // ========================================================
-    // UNDO LAST ACTION
-    // ========================================================
-
-    socket.on("undoSale", () => {
+    socket.on("undo", () => {
 
         if (
-            !Array.isArray(state.history) ||
+            !state.history ||
             state.history.length === 0
         ) {
 
-            sendError(
+            error(
                 socket,
                 "Nothing to undo."
             );
@@ -976,93 +944,67 @@ io.on("connection", socket => {
             return;
         }
 
+        const previous =
+            state.history.pop();
 
-        try {
-
-            const previous =
-                state.history.pop();
-
-
-            const restored =
-                JSON.parse(previous);
-
-
-            state.players =
-                restored.players;
-
-
-            state.teams =
-                restored.teams;
-
-
-            state.current =
-                restored.current;
-
-
-            state.liveBid =
-                restored.liveBid;
-
-
-            state.liveBidTeam =
-                restored.liveBidTeam;
-
-
-            rebuildTeams();
-
-            saveState();
-
-            io.emit(
-                "update",
-                state
+        state.players =
+            JSON.parse(
+                JSON.stringify(
+                    previous.players
+                )
             );
 
-        } catch (error) {
+        state.current =
+            previous.current;
 
-            console.log(error);
+        state.liveBid =
+            previous.liveBid;
 
-            sendError(
-                socket,
-                "Undo failed."
-            );
+        state.liveBidTeam =
+            previous.liveBidTeam;
 
-        }
+        rebuildTeams();
 
+        saveState();
+
+        io.emit(
+            "state",
+            getPublicState()
+        );
     });
 
-
-    // ========================================================
-    // ADD PLAYER
-    // ========================================================
+    /*
+    ========================================================
+    ADD PLAYER
+    ========================================================
+    */
 
     socket.on("addPlayer", name => {
 
         name =
             String(name || "").trim();
 
-
         if (!name) {
 
-            sendError(
+            error(
                 socket,
-                "Enter player name."
+                "Enter a player name."
             );
 
             return;
         }
 
-
         saveHistory();
 
+        const ids =
+            state.players.map(
+                p => Number(p.id) || 0
+            );
 
         const nextId =
-            state.players.length > 0
-                ? Math.max(
-                    ...state.players.map(
-                        p => Number(p.id) || 0
-                    )
-                ) + 1
+            ids.length
+                ? Math.max(...ids) + 1
                 : 1;
-
 
         state.players.push({
 
@@ -1075,40 +1017,35 @@ io.on("connection", socket => {
             team: null,
 
             amount: 0
-
         });
-
 
         state.current =
             state.players.length - 1;
 
-
-        state.liveBid = 200;
+        state.liveBid = BASE_PRICE;
 
         state.liveBidTeam = null;
 
-
         broadcast();
-
     });
 
-
-    // ========================================================
-    // EDIT PLAYER NAME
-    // ========================================================
+    /*
+    ========================================================
+    EDIT PLAYER
+    ========================================================
+    */
 
     socket.on("editPlayer", data => {
 
         const index =
-            Number(data?.index);
+            Number(data.index);
 
         const name =
-            String(data?.name || "").trim();
-
+            String(data.name || "").trim();
 
         if (!validPlayer(index)) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid player."
             );
@@ -1116,42 +1053,38 @@ io.on("connection", socket => {
             return;
         }
 
-
         if (!name) {
 
-            sendError(
+            error(
                 socket,
-                "Enter player name."
+                "Enter a player name."
             );
 
             return;
         }
 
-
         saveHistory();
-
 
         state.players[index].name =
             name;
 
-
         broadcast();
-
     });
 
+    /*
+    ========================================================
+    DELETE PLAYER
+    ========================================================
+    */
 
-    // ========================================================
-    // DELETE PLAYER
-    // ========================================================
+    socket.on("deletePlayer", index => {
 
-    socket.on("removePlayer", index => {
-
-        index = Number(index);
-
+        index =
+            Number(index);
 
         if (!validPlayer(index)) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid player."
             );
@@ -1159,72 +1092,61 @@ io.on("connection", socket => {
             return;
         }
 
-
         const player =
             state.players[index];
 
-
-        // Do not allow sold players
-        // to be deleted accidentally
-
         if (player.status === "sold") {
 
-            sendError(
+            error(
                 socket,
-                "Sold players cannot be deleted. Use Correct Sold Player instead."
+                "Sold player cannot be deleted. Correct the sale first."
             );
 
             return;
         }
 
-
         saveHistory();
-
 
         state.players.splice(
             index,
             1
         );
 
-
-        if (state.players.length === 0) {
-
-            state.current = 0;
-
-        } else if (
+        if (
             state.current >=
             state.players.length
         ) {
 
             state.current =
-                state.players.length - 1;
+                Math.max(
+                    0,
+                    state.players.length - 1
+                );
         }
 
-
         broadcast();
-
     });
 
+    /*
+    ========================================================
+    CORRECT SOLD PLAYER
+    ========================================================
+    */
 
-    // ========================================================
-    // CORRECT SOLD PLAYER
-    // ========================================================
-
-    socket.on("editSoldPlayer", data => {
+    socket.on("correctSoldPlayer", data => {
 
         const index =
-            Number(data?.index);
+            Number(data.index);
 
         const teamIndex =
-            Number(data?.team);
+            Number(data.teamIndex);
 
         const amount =
-            Number(data?.amount);
-
+            Number(data.amount);
 
         if (!validPlayer(index)) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid player."
             );
@@ -1232,10 +1154,9 @@ io.on("connection", socket => {
             return;
         }
 
-
         if (!state.teams[teamIndex]) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid team."
             );
@@ -1243,13 +1164,12 @@ io.on("connection", socket => {
             return;
         }
 
-
         if (
             !Number.isFinite(amount) ||
-            amount < 200
+            amount < BASE_PRICE
         ) {
 
-            sendError(
+            error(
                 socket,
                 "Invalid price."
             );
@@ -1257,14 +1177,12 @@ io.on("connection", socket => {
             return;
         }
 
-
         const player =
             state.players[index];
 
-
         if (player.status !== "sold") {
 
-            sendError(
+            error(
                 socket,
                 "This player is not sold."
             );
@@ -1272,29 +1190,24 @@ io.on("connection", socket => {
             return;
         }
 
-
-        // ----------------------------------------------------
-        // Calculate available money correctly
-        // ----------------------------------------------------
+        rebuildTeams();
 
         const oldTeam =
             state.teams.find(
-                team =>
-                    team.name === player.team
+                t => t.name === player.team
             );
-
 
         const newTeam =
             state.teams[teamIndex];
-
 
         let available =
             newTeam.budget -
             newTeam.spent;
 
-
-        // If correcting within same team,
-        // add old price back first
+        /*
+        If moving within the same team,
+        return old price before checking.
+        */
 
         if (
             oldTeam &&
@@ -1305,87 +1218,76 @@ io.on("connection", socket => {
                 Number(player.amount) || 0;
         }
 
-
         if (amount > available) {
 
-            sendError(
+            error(
                 socket,
-                `${newTeam.name} has only ₹${available} available.`
+                `${newTeam.name} only has ₹${available} available.`
             );
 
             return;
         }
 
-
         saveHistory();
-
-
-        // ----------------------------------------------------
-        // CHANGE TEAM + PRICE
-        // ----------------------------------------------------
 
         player.team =
             newTeam.name;
 
-
         player.amount =
             amount;
-
 
         player.status =
             "sold";
 
+        state.current =
+            index;
 
         rebuildTeams();
 
         broadcast();
-
     });
 
-
-    // ========================================================
-    // RESET AUCTION
-    // ========================================================
+    /*
+    ========================================================
+    RESET AUCTION
+    ========================================================
+    */
 
     socket.on("resetAuction", () => {
 
         saveHistory();
 
-
         state =
-            createNewAuction();
-
+            createFreshAuction();
 
         saveState();
 
-
         io.emit(
-            "update",
-            state
+            "state",
+            getPublicState()
         );
-
     });
 
-
-    // ========================================================
-    // DISCONNECT
-    // ========================================================
+    /*
+    ========================================================
+    DISCONNECT
+    ========================================================
+    */
 
     socket.on("disconnect", () => {
 
         console.log(
-            "Client disconnected:",
+            "Disconnected:",
             socket.id
         );
-
     });
-
 });
 
-
-// ============================================================
-// START SERVER
-// ============================================================
+/*
+==========================================================
+START
+==========================================================
+*/
 
 loadState();
 
@@ -1393,20 +1295,19 @@ rebuildTeams();
 
 saveState();
 
-
 server.listen(
     PORT,
     () => {
 
         console.log("");
         console.log(
-            "========================================"
+            "====================================="
         );
         console.log(
             "🏏 CRICKET AUCTION LIVE"
         );
         console.log(
-            "========================================"
+            "====================================="
         );
         console.log(
             `Port: ${PORT}`
@@ -1415,15 +1316,14 @@ server.listen(
             `Players: ${state.players.length}`
         );
         console.log(
-            `Teams: ${TEAM_NAMES.join(", ")}`
+            `Teams: ${TEAM_NAMES.join(" | ")}`
         );
         console.log(
             `Admin PIN: ${ADMIN_PIN}`
         );
         console.log(
-            "========================================"
+            "====================================="
         );
         console.log("");
-
     }
 );
